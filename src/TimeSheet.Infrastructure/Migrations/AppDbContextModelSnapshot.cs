@@ -15,21 +15,33 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
     // If you encounter a merge conflict in the line below, it means you need to
     // discard one of the migration branches and recreate its migrations on top of
     // the other branch. See https://aka.ms/efcore-docs-migrations-conflicts for more info.
-    public override string LastMigrationId => "20261113111806_InitialCreate";
+    public override string LastMigrationId => "20261116105404_izmena";
 
     protected override void BuildModel(ModelBuilder modelBuilder)
     {
 #pragma warning disable 612, 618
         modelBuilder.HasAnnotation("ProductVersion", "11.0.0");
 
-        modelBuilder.Entity("Timesheet.Domain.Entities.Category", b =>
+        modelBuilder.Entity("Timesheet.Infrastructure.DBEntities.Category", b =>
             {
                 b.Property<Guid>("Id")
                     .ValueGeneratedOnAdd()
                     .HasColumnType("TEXT");
 
+                b.Property<DateTime>("CreatedAt")
+                    .HasColumnType("TEXT");
+
+                b.Property<DateTime?>("DeletedAt")
+                    .HasColumnType("TEXT");
+
+                b.Property<bool>("IsDeleted")
+                    .HasColumnType("INTEGER");
+
                 b.Property<string>("Name")
                     .IsRequired()
+                    .HasColumnType("TEXT");
+
+                b.Property<DateTime>("UpdatedAt")
                     .HasColumnType("TEXT");
 
                 b.HasKey("Id");
@@ -37,7 +49,7 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
                 b.ToTable("Categories");
             });
 
-        modelBuilder.Entity("Timesheet.Domain.Entities.Client", b =>
+        modelBuilder.Entity("Timesheet.Infrastructure.DBEntities.Client", b =>
             {
                 b.Property<Guid>("Id")
                     .ValueGeneratedOnAdd()
@@ -54,8 +66,20 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
                 b.Property<Guid>("CountryId")
                     .HasColumnType("TEXT");
 
+                b.Property<DateTime>("CreatedAt")
+                    .HasColumnType("TEXT");
+
+                b.Property<DateTime?>("DeletedAt")
+                    .HasColumnType("TEXT");
+
+                b.Property<bool>("IsDeleted")
+                    .HasColumnType("INTEGER");
+
                 b.Property<string>("Name")
                     .IsRequired()
+                    .HasColumnType("TEXT");
+
+                b.Property<DateTime>("UpdatedAt")
                     .HasColumnType("TEXT");
 
                 b.Property<string>("Zip")
@@ -69,7 +93,7 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
                 b.ToTable("Clients");
             });
 
-        modelBuilder.Entity("Timesheet.Domain.Entities.Country", b =>
+        modelBuilder.Entity("Timesheet.Infrastructure.DBEntities.Country", b =>
             {
                 b.Property<Guid>("Id")
                     .ValueGeneratedOnAdd()
@@ -79,8 +103,20 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
                     .IsRequired()
                     .HasColumnType("TEXT");
 
+                b.Property<DateTime>("CreatedAt")
+                    .HasColumnType("TEXT");
+
+                b.Property<DateTime?>("DeletedAt")
+                    .HasColumnType("TEXT");
+
+                b.Property<bool>("IsDeleted")
+                    .HasColumnType("INTEGER");
+
                 b.Property<string>("Name")
                     .IsRequired()
+                    .HasColumnType("TEXT");
+
+                b.Property<DateTime>("UpdatedAt")
                     .HasColumnType("TEXT");
 
                 b.HasKey("Id");
@@ -88,7 +124,7 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
                 b.ToTable("Countries");
             });
 
-        modelBuilder.Entity("Timesheet.Domain.Entities.Project", b =>
+        modelBuilder.Entity("Timesheet.Infrastructure.DBEntities.Project", b =>
             {
                 b.Property<Guid>("Id")
                     .ValueGeneratedOnAdd()
@@ -97,9 +133,18 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
                 b.Property<Guid>("ClientId")
                     .HasColumnType("TEXT");
 
+                b.Property<DateTime>("CreatedAt")
+                    .HasColumnType("TEXT");
+
+                b.Property<DateTime?>("DeletedAt")
+                    .HasColumnType("TEXT");
+
                 b.Property<string>("Description")
                     .IsRequired()
                     .HasColumnType("TEXT");
+
+                b.Property<bool>("IsDeleted")
+                    .HasColumnType("INTEGER");
 
                 b.Property<string>("Name")
                     .IsRequired()
@@ -111,6 +156,9 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
                 b.Property<Guid>("TeamMemberId")
                     .HasColumnType("TEXT");
 
+                b.Property<DateTime>("UpdatedAt")
+                    .HasColumnType("TEXT");
+
                 b.HasKey("Id");
 
                 b.HasIndex("ClientId");
@@ -120,10 +168,16 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
                 b.ToTable("Projects");
             });
 
-        modelBuilder.Entity("Timesheet.Domain.Entities.TeamMember", b =>
+        modelBuilder.Entity("Timesheet.Infrastructure.DBEntities.TeamMember", b =>
             {
                 b.Property<Guid>("Id")
                     .ValueGeneratedOnAdd()
+                    .HasColumnType("TEXT");
+
+                b.Property<DateTime>("CreatedAt")
+                    .HasColumnType("TEXT");
+
+                b.Property<DateTime?>("DeletedAt")
                     .HasColumnType("TEXT");
 
                 b.Property<string>("Email")
@@ -132,6 +186,9 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
 
                 b.Property<double>("HoursPerWeek")
                     .HasColumnType("REAL");
+
+                b.Property<bool>("IsDeleted")
+                    .HasColumnType("INTEGER");
 
                 b.Property<string>("Name")
                     .IsRequired()
@@ -147,6 +204,9 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
                 b.Property<int>("Status")
                     .HasColumnType("INTEGER");
 
+                b.Property<DateTime>("UpdatedAt")
+                    .HasColumnType("TEXT");
+
                 b.Property<string>("Username")
                     .IsRequired()
                     .HasColumnType("TEXT");
@@ -156,7 +216,7 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
                 b.ToTable("TeamMembers");
             });
 
-        modelBuilder.Entity("Timesheet.Domain.Entities.TimeEntry", b =>
+        modelBuilder.Entity("Timesheet.Infrastructure.DBEntities.TimeEntry", b =>
             {
                 b.Property<Guid>("Id")
                     .ValueGeneratedOnAdd()
@@ -165,11 +225,20 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
                 b.Property<Guid>("CategoryId")
                     .HasColumnType("TEXT");
 
+                b.Property<DateTime>("CreatedAt")
+                    .HasColumnType("TEXT");
+
                 b.Property<DateTime>("Date")
+                    .HasColumnType("TEXT");
+
+                b.Property<DateTime?>("DeletedAt")
                     .HasColumnType("TEXT");
 
                 b.Property<string>("Description")
                     .HasColumnType("TEXT");
+
+                b.Property<bool>("IsDeleted")
+                    .HasColumnType("INTEGER");
 
                 b.Property<double?>("Overtime")
                     .HasColumnType("REAL");
@@ -183,6 +252,9 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
                 b.Property<double>("Time")
                     .HasColumnType("REAL");
 
+                b.Property<DateTime>("UpdatedAt")
+                    .HasColumnType("TEXT");
+
                 b.HasKey("Id");
 
                 b.HasIndex("CategoryId");
@@ -194,9 +266,9 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
                 b.ToTable("TimeEntries");
             });
 
-        modelBuilder.Entity("Timesheet.Domain.Entities.Client", b =>
+        modelBuilder.Entity("Timesheet.Infrastructure.DBEntities.Client", b =>
             {
-                b.HasOne("Timesheet.Domain.Entities.Country", "Country")
+                b.HasOne("Timesheet.Infrastructure.DBEntities.Country", "Country")
                     .WithMany("Clients")
                     .HasForeignKey("CountryId")
                     .OnDelete(DeleteBehavior.Cascade)
@@ -205,15 +277,15 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
                 b.Navigation("Country");
             });
 
-        modelBuilder.Entity("Timesheet.Domain.Entities.Project", b =>
+        modelBuilder.Entity("Timesheet.Infrastructure.DBEntities.Project", b =>
             {
-                b.HasOne("Timesheet.Domain.Entities.Client", "Client")
+                b.HasOne("Timesheet.Infrastructure.DBEntities.Client", "Client")
                     .WithMany("Projects")
                     .HasForeignKey("ClientId")
                     .OnDelete(DeleteBehavior.Cascade)
                     .IsRequired();
 
-                b.HasOne("Timesheet.Domain.Entities.TeamMember", "TeamMember")
+                b.HasOne("Timesheet.Infrastructure.DBEntities.TeamMember", "TeamMember")
                     .WithMany("Projects")
                     .HasForeignKey("TeamMemberId")
                     .OnDelete(DeleteBehavior.Cascade)
@@ -224,21 +296,21 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
                 b.Navigation("TeamMember");
             });
 
-        modelBuilder.Entity("Timesheet.Domain.Entities.TimeEntry", b =>
+        modelBuilder.Entity("Timesheet.Infrastructure.DBEntities.TimeEntry", b =>
             {
-                b.HasOne("Timesheet.Domain.Entities.Category", "Category")
+                b.HasOne("Timesheet.Infrastructure.DBEntities.Category", "Category")
                     .WithMany("TimeEntries")
                     .HasForeignKey("CategoryId")
                     .OnDelete(DeleteBehavior.Cascade)
                     .IsRequired();
 
-                b.HasOne("Timesheet.Domain.Entities.Project", "Project")
+                b.HasOne("Timesheet.Infrastructure.DBEntities.Project", "Project")
                     .WithMany("TimeEntries")
                     .HasForeignKey("ProjectId")
                     .OnDelete(DeleteBehavior.Cascade)
                     .IsRequired();
 
-                b.HasOne("Timesheet.Domain.Entities.TeamMember", "TeamMember")
+                b.HasOne("Timesheet.Infrastructure.DBEntities.TeamMember", "TeamMember")
                     .WithMany("TimeEntries")
                     .HasForeignKey("TeamMemberId")
                     .OnDelete(DeleteBehavior.Cascade)
@@ -251,27 +323,27 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
                 b.Navigation("TeamMember");
             });
 
-        modelBuilder.Entity("Timesheet.Domain.Entities.Category", b =>
+        modelBuilder.Entity("Timesheet.Infrastructure.DBEntities.Category", b =>
             {
                 b.Navigation("TimeEntries");
             });
 
-        modelBuilder.Entity("Timesheet.Domain.Entities.Client", b =>
+        modelBuilder.Entity("Timesheet.Infrastructure.DBEntities.Client", b =>
             {
                 b.Navigation("Projects");
             });
 
-        modelBuilder.Entity("Timesheet.Domain.Entities.Country", b =>
+        modelBuilder.Entity("Timesheet.Infrastructure.DBEntities.Country", b =>
             {
                 b.Navigation("Clients");
             });
 
-        modelBuilder.Entity("Timesheet.Domain.Entities.Project", b =>
+        modelBuilder.Entity("Timesheet.Infrastructure.DBEntities.Project", b =>
             {
                 b.Navigation("TimeEntries");
             });
 
-        modelBuilder.Entity("Timesheet.Domain.Entities.TeamMember", b =>
+        modelBuilder.Entity("Timesheet.Infrastructure.DBEntities.TeamMember", b =>
             {
                 b.Navigation("Projects");
 

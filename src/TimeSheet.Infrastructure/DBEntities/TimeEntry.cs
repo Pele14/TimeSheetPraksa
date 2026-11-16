@@ -1,7 +1,9 @@
 
-namespace Timesheet.Domain.Entities;
+using TimeSheet.Infrastructure.Persistence;
 
-   public class TimeEntry
+namespace Timesheet.Infrastructure.DBEntities;
+
+   public class TimeEntry: ISoftDelitable
     {
         public Guid Id { get; set; }
 
@@ -12,6 +14,14 @@ namespace Timesheet.Domain.Entities;
         public double? Overtime { get; set; }
 
         public string? Description { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+
+        public DateTime UpdatedAt { get; set; }
+
+        public bool IsDeleted { get; set; }
+
+        public DateTime? DeletedAt { get; set; }
 
         public Guid CategoryId { get; set; }
 

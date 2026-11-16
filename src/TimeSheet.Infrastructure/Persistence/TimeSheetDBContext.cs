@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using Timesheet.Domain.Entities;
-
+using Timesheet.Infrastructure.DBEntities;
+using TimeSheet.Infrastructure.Configurations;
 
 
 namespace TimeSheet.Infrastructure.Persistence;
@@ -16,5 +16,18 @@ namespace TimeSheet.Infrastructure.Persistence;
         public DbSet<TeamMember> TeamMembers { get; set; }
         public DbSet<TimeEntry> TimeEntries { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfiguration(new CategoryConfiguration());
+            modelBuilder.ApplyConfiguration(new ClientConfiguration());
+            modelBuilder.ApplyConfiguration(new CountryConfiguration());
+            modelBuilder.ApplyConfiguration(new ProjectConfiguration());
+            modelBuilder.ApplyConfiguration(new TeamMemberConfiguration());
+            modelBuilder.ApplyConfiguration(new TimeEntryConfiguration());
+
+            base.OnModelCreating(modelBuilder);
+        }
+
+            
 
 }

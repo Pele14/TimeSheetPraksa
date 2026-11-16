@@ -4,7 +4,7 @@ using TimeSheet.Domain.Interfaces;
 using TimeSheet.Infrastructure.Persistence;
 
 namespace TimeSheet.Infrastructure.Repositories;
-
+/*
 public class TeamMemberRepository : ITeamMemberRepository
 {
     private readonly AppDbContext _context;
@@ -50,4 +50,4 @@ public class TeamMemberRepository : ITeamMemberRepository
             await _context.SaveChangesAsync();
         }
     }
-}
+}*/

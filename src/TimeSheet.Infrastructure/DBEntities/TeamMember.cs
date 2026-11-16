@@ -1,6 +1,8 @@
-namespace Timesheet.Domain.Entities;
+using TimeSheet.Infrastructure.Persistence;
 
-    public class TeamMember
+namespace Timesheet.Infrastructure.DBEntities;
+
+    public class TeamMember: ISoftDelitable
     {
         public Guid Id { get; set; } 
 
@@ -17,6 +19,14 @@ namespace Timesheet.Domain.Entities;
         public Role Role { get; set; }
 
         public MemberStatus Status { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+
+        public DateTime UpdatedAt { get; set; }
+
+        public bool IsDeleted { get; set; }
+
+        public DateTime? DeletedAt { get; set; }
 
         public ICollection<Project> Projects { get; set; } = new List<Project>();
 

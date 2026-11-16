@@ -1,6 +1,8 @@
-namespace Timesheet.Domain.Entities;
+using TimeSheet.Infrastructure.Persistence;
 
-    public class Client
+namespace Timesheet.Infrastructure.DBEntities;
+
+    public class Client: ISoftDelitable
     {
         public Guid Id{ get; set; }
         public required string Name { get; set; }
@@ -8,6 +10,14 @@ namespace Timesheet.Domain.Entities;
         public required string City { get; set; }
 
         public required string Zip{ get; set;    }
+
+        public DateTime CreatedAt { get; set; }
+
+        public DateTime UpdatedAt { get; set; }
+
+        public bool IsDeleted { get; set; }
+
+        public DateTime? DeletedAt { get; set; }
 
         public Guid CountryId { get; set; }
 

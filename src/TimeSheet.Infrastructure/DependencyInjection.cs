@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using TimeSheet.Domain.Interfaces;
 using TimeSheet.Infrastructure.Persistence;
 using TimeSheet.Infrastructure.Repositories;
-
 namespace TimeSheet.Infrastructure;
 
 public static class DependencyInjection
@@ -13,7 +12,7 @@ public static class DependencyInjection
     {
         services.AddDbContext<AppDbContext>(options =>
             options.UseSqlite(configuration.GetConnectionString("DefaultConnection")));
-        services.AddScoped<ITeamMemberRepository, TeamMemberRepository>();
+        
         return services;
     }
 }

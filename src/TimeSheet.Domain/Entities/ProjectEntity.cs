@@ -1,7 +1,7 @@
 namespace Timesheet.Domain.Entities;
 
 
-    public class Project
+    public class ProjectEntity
     {
         public Guid Id { get; set; }
 
@@ -13,11 +13,8 @@ namespace Timesheet.Domain.Entities;
 
         public Guid ClientId { get; set; }
 
-        public Client Client { get; set; } = null!;
-
         public Guid TeamMemberId { get; set; }
-        public TeamMember TeamMember { get; set; } = null!;
 
-        public ICollection<TimeEntry> TimeEntries { get; set; } = new List<TimeEntry>();
+        public ICollection<TimeEntryEntity> TimeEntries { get; set; } = new List<TimeEntryEntity>();
 
     }

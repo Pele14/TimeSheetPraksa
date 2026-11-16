@@ -2,10 +2,10 @@
 
 namespace Timesheet.Domain.Entities;
 
-  public class Category
+  public class CategoryEntity 
     {
         public Guid Id { get; set; }
         public required string Name { get; set; }
 
-        public ICollection<TimeEntry> TimeEntries { get; set; } = new List<TimeEntry>();
+        public ICollection<TimeEntryEntity> TimeEntries { get; set; } = new List<TimeEntryEntity>();
     }
