@@ -21,7 +21,7 @@ namespace Timesheet.Domain.Entities;
 
         public Guid TeamMemberId { get; set; }
 
-        public TimeEntryEntity(Guid id, DateTime date, double time, double overtime, string description, Guid id1, Guid id2, Guid id3)
+        public TimeEntryEntity(Guid id, DateTime date, double time, double overtime, string? description, Guid id1, Guid id2, Guid id3)
     {
         Id=id;
         Date=date;
