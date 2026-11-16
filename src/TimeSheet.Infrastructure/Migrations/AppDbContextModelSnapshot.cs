@@ -15,7 +15,7 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
     // If you encounter a merge conflict in the line below, it means you need to
     // discard one of the migration branches and recreate its migrations on top of
     // the other branch. See https://aka.ms/efcore-docs-migrations-conflicts for more info.
-    public override string LastMigrationId => "20261116105404_izmena";
+    public override string LastMigrationId => "20261116113708_izmena2";
 
     protected override void BuildModel(ModelBuilder modelBuilder)
     {
@@ -39,6 +39,7 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
 
                 b.Property<string>("Name")
                     .IsRequired()
+                    .HasMaxLength(100)
                     .HasColumnType("TEXT");
 
                 b.Property<DateTime>("UpdatedAt")
@@ -57,10 +58,12 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
 
                 b.Property<string>("Address")
                     .IsRequired()
+                    .HasMaxLength(200)
                     .HasColumnType("TEXT");
 
                 b.Property<string>("City")
                     .IsRequired()
+                    .HasMaxLength(100)
                     .HasColumnType("TEXT");
 
                 b.Property<Guid>("CountryId")
@@ -77,6 +80,7 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
 
                 b.Property<string>("Name")
                     .IsRequired()
+                    .HasMaxLength(100)
                     .HasColumnType("TEXT");
 
                 b.Property<DateTime>("UpdatedAt")
@@ -84,6 +88,7 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
 
                 b.Property<string>("Zip")
                     .IsRequired()
+                    .HasMaxLength(20)
                     .HasColumnType("TEXT");
 
                 b.HasKey("Id");
@@ -101,6 +106,7 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
 
                 b.Property<string>("Code")
                     .IsRequired()
+                    .HasMaxLength(10)
                     .HasColumnType("TEXT");
 
                 b.Property<DateTime>("CreatedAt")
@@ -114,6 +120,7 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
 
                 b.Property<string>("Name")
                     .IsRequired()
+                    .HasMaxLength(100)
                     .HasColumnType("TEXT");
 
                 b.Property<DateTime>("UpdatedAt")
@@ -141,6 +148,7 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
 
                 b.Property<string>("Description")
                     .IsRequired()
+                    .HasMaxLength(500)
                     .HasColumnType("TEXT");
 
                 b.Property<bool>("IsDeleted")
@@ -148,6 +156,7 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
 
                 b.Property<string>("Name")
                     .IsRequired()
+                    .HasMaxLength(100)
                     .HasColumnType("TEXT");
 
                 b.Property<int>("ProjectStatus")
@@ -182,6 +191,7 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
 
                 b.Property<string>("Email")
                     .IsRequired()
+                    .HasMaxLength(100)
                     .HasColumnType("TEXT");
 
                 b.Property<double>("HoursPerWeek")
@@ -192,10 +202,12 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
 
                 b.Property<string>("Name")
                     .IsRequired()
+                    .HasMaxLength(50)
                     .HasColumnType("TEXT");
 
                 b.Property<string>("PasswordHash")
                     .IsRequired()
+                    .HasMaxLength(200)
                     .HasColumnType("TEXT");
 
                 b.Property<int>("Role")
@@ -209,6 +221,7 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
 
                 b.Property<string>("Username")
                     .IsRequired()
+                    .HasMaxLength(50)
                     .HasColumnType("TEXT");
 
                 b.HasKey("Id");
@@ -235,12 +248,14 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
                     .HasColumnType("TEXT");
 
                 b.Property<string>("Description")
+                    .IsRequired()
+                    .HasMaxLength(200)
                     .HasColumnType("TEXT");
 
                 b.Property<bool>("IsDeleted")
                     .HasColumnType("INTEGER");
 
-                b.Property<double?>("Overtime")
+                b.Property<double>("Overtime")
                     .HasColumnType("REAL");
 
                 b.Property<Guid>("ProjectId")
@@ -271,7 +286,7 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
                 b.HasOne("Timesheet.Infrastructure.DBEntities.Country", "Country")
                     .WithMany("Clients")
                     .HasForeignKey("CountryId")
-                    .OnDelete(DeleteBehavior.Cascade)
+                    .OnDelete(DeleteBehavior.Restrict)
                     .IsRequired();
 
                 b.Navigation("Country");
@@ -282,13 +297,13 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
                 b.HasOne("Timesheet.Infrastructure.DBEntities.Client", "Client")
                     .WithMany("Projects")
                     .HasForeignKey("ClientId")
-                    .OnDelete(DeleteBehavior.Cascade)
+                    .OnDelete(DeleteBehavior.Restrict)
                     .IsRequired();
 
                 b.HasOne("Timesheet.Infrastructure.DBEntities.TeamMember", "TeamMember")
                     .WithMany("Projects")
                     .HasForeignKey("TeamMemberId")
-                    .OnDelete(DeleteBehavior.Cascade)
+                    .OnDelete(DeleteBehavior.Restrict)
                     .IsRequired();
 
                 b.Navigation("Client");
@@ -307,13 +322,13 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
                 b.HasOne("Timesheet.Infrastructure.DBEntities.Project", "Project")
                     .WithMany("TimeEntries")
                     .HasForeignKey("ProjectId")
-                    .OnDelete(DeleteBehavior.Cascade)
+                    .OnDelete(DeleteBehavior.Restrict)
                     .IsRequired();
 
                 b.HasOne("Timesheet.Infrastructure.DBEntities.TeamMember", "TeamMember")
                     .WithMany("TimeEntries")
                     .HasForeignKey("TeamMemberId")
-                    .OnDelete(DeleteBehavior.Cascade)
+                    .OnDelete(DeleteBehavior.Restrict)
                     .IsRequired();
 
                 b.Navigation("Category");

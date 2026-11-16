@@ -5,7 +5,16 @@ namespace Timesheet.Domain.Entities;
   public class CategoryEntity 
     {
         public Guid Id { get; set; }
-        public required string Name { get; set; }
+        public string Name { get; set; }
 
-        public ICollection<TimeEntryEntity> TimeEntries { get; set; } = new List<TimeEntryEntity>();
+
+
+        public CategoryEntity(Guid id, string name)
+        {
+            
+        Id = id;
+        Name = name;
+        }
+        
+
     }

@@ -36,5 +36,7 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
             .HasForeignKey(p=>p.TeamMemberId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        builder.HasQueryFilter(p => !p.IsDeleted);
+
     }
 }

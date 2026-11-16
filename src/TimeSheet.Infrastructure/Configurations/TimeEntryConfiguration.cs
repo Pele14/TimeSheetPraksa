@@ -34,7 +34,7 @@ namespace TimeSheet.Infrastructure.Configurations
             builder.Property(te => te.UpdatedAt)
                 .IsRequired();  
 
-                
+            builder.HasQueryFilter(te => !te.IsDeleted);    
                     
 
             

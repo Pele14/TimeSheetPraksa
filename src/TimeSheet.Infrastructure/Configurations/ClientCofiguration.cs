@@ -35,5 +35,14 @@ namespace TimeSheet.Infrastructure.Configurations;
                 .WithOne(p => p.Client)
                 .HasForeignKey(p => p.ClientId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Property(c => c.CreatedAt)
+                .IsRequired();
+
+            builder.Property(c => c.UpdatedAt)
+                .IsRequired();
+            
+            builder.HasQueryFilter(c => !c.IsDeleted);
+
         }
     }

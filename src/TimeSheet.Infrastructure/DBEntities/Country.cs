@@ -2,7 +2,8 @@ using TimeSheet.Infrastructure.Persistence;
 
 namespace Timesheet.Infrastructure.DBEntities;
 
-    public class Country: ISoftDelitable
+    public class Country: ISoftDelitable, IAuditable
+
     {
         public Guid Id { get; set; }
         public required string Name { get; set; }
@@ -11,7 +12,7 @@ namespace Timesheet.Infrastructure.DBEntities;
 
         public DateTime CreatedAt { get; set; }
 
-        public DateTime UpdatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
 
         public bool IsDeleted { get; set; }
 

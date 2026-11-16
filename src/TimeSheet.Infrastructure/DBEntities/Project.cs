@@ -3,7 +3,7 @@ using TimeSheet.Infrastructure.Persistence;
 namespace Timesheet.Infrastructure.DBEntities;
 
 
-    public class Project: ISoftDelitable
+    public class Project: ISoftDelitable, IAuditable
     {
         public Guid Id { get; set; }
 
@@ -15,7 +15,7 @@ namespace Timesheet.Infrastructure.DBEntities;
 
         public DateTime CreatedAt { get; set; }
 
-        public DateTime UpdatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
 
         public bool IsDeleted { get; set; }
 

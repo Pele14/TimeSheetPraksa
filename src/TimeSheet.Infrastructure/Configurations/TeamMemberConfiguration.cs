@@ -45,5 +45,8 @@ namespace TimeSheet.Infrastructure.Configurations;
                 .WithOne(te => te.TeamMember)
                 .HasForeignKey(te => te.TeamMemberId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasQueryFilter(tm => !tm.IsDeleted);
+            
         }
     }

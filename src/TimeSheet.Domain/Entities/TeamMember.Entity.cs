@@ -4,13 +4,13 @@ namespace Timesheet.Domain.Entities;
     {
         public Guid Id { get; set; } 
 
-        public required string Name { get; set; }
+        public string Name { get; set; }
 
-        public required string Username { get; set; }
+        public string Username { get; set; }
 
-        public required string Email { get; set; }
+        public string Email { get; set; }
 
-        public required string PasswordHash { get; set; }
+        public string PasswordHash { get; set; }
 
         public double HoursPerWeek { get; set; }
 
@@ -18,7 +18,16 @@ namespace Timesheet.Domain.Entities;
 
         public MemberStatus Status { get; set; }
 
-        public ICollection<ProjectEntity> Projects { get; set; } = new List<ProjectEntity>();
+       public TeamMemberEntity(Guid id, string name, string username, string email, string password, double hours, Role role, MemberStatus status)
+    {
+        Id=id;
+        Name=name;
+        Username=username;
+        Email=email;
+        PasswordHash=password;
+        HoursPerWeek=hours;
+        Role=role;
+        Status=status;
 
-        public ICollection<TimeEntryEntity> TimeEntries { get; set; } = new List<TimeEntryEntity>();
+    }
 }

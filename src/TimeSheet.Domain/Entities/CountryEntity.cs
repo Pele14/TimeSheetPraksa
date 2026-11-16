@@ -3,9 +3,16 @@ namespace Timesheet.Domain.Entities;
     public class CountryEntity
     {
         public Guid Id { get; set; }
-        public required string Name { get; set; }
+        public  string Name { get; set; }
 
-        public required string Code { get; set; }
+        public  string Code { get; set; }
 
-        public ICollection<ClientEntity> Clients { get; set; } = new List<ClientEntity>();
+
+        public CountryEntity(Guid id, string name, string code)
+    {
+        Id=id;
+        Name=name;
+        Code=code;
+
+    }
     }

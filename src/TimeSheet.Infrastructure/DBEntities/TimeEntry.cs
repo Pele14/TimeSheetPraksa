@@ -3,7 +3,7 @@ using TimeSheet.Infrastructure.Persistence;
 
 namespace Timesheet.Infrastructure.DBEntities;
 
-   public class TimeEntry: ISoftDelitable
+   public class TimeEntry: ISoftDelitable, IAuditable
     {
         public Guid Id { get; set; }
 
@@ -11,13 +11,13 @@ namespace Timesheet.Infrastructure.DBEntities;
 
         public double Time { get; set; }
 
-        public double? Overtime { get; set; }
+        public double Overtime { get; set; }
 
         public string? Description { get; set; }
 
         public DateTime CreatedAt { get; set; }
 
-        public DateTime UpdatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
 
         public bool IsDeleted { get; set; }
 

@@ -25,5 +25,8 @@ public class CategoryConfiguration : IEntityTypeConfiguration<Category>
         builder.HasMany(c => c.TimeEntries)
             .WithOne(te => te.Category)
             .HasForeignKey(te => te.CategoryId);
+        
+        builder.HasQueryFilter(c => !c.IsDeleted);
+
     }
 }

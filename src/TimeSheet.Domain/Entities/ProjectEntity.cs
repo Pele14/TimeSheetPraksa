@@ -5,9 +5,9 @@ namespace Timesheet.Domain.Entities;
     {
         public Guid Id { get; set; }
 
-        public required string Name { get; set; }
+        public string Name { get; set; }
 
-        public required string Description { get; set; }
+        public string Description { get; set; }
 
         public ProjectStatus ProjectStatus { get; set; }
 
@@ -15,6 +15,14 @@ namespace Timesheet.Domain.Entities;
 
         public Guid TeamMemberId { get; set; }
 
-        public ICollection<TimeEntryEntity> TimeEntries { get; set; } = new List<TimeEntryEntity>();
+        public ProjectEntity(Guid id, string name, string description, ProjectStatus projectStatus, Guid id1, Guid id2)
+    {
+        Id=id;
+        Name=name;
+        Description=description;
+        ProjectStatus=projectStatus;
+        ClientId=id1;
+        TeamMemberId=id2;
 
+    }
     }

@@ -23,5 +23,10 @@ public class CountryConfiguration : IEntityTypeConfiguration<Country>
 
         builder.Property(c => c.CreatedAt)
             .IsRequired();
+
+        builder.Property(c => c.UpdatedAt)
+            .IsRequired();
+
+        builder.HasQueryFilter(c => !c.IsDeleted);
     }
 }
