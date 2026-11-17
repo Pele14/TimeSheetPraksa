@@ -15,7 +15,7 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
     // If you encounter a merge conflict in the line below, it means you need to
     // discard one of the migration branches and recreate its migrations on top of
     // the other branch. See https://aka.ms/efcore-docs-migrations-conflicts for more info.
-    public override string LastMigrationId => "20261116113708_izmena2";
+    public override string LastMigrationId => "20261117125952_izmena5";
 
     protected override void BuildModel(ModelBuilder modelBuilder)
     {
@@ -42,7 +42,7 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
                     .HasMaxLength(100)
                     .HasColumnType("TEXT");
 
-                b.Property<DateTime>("UpdatedAt")
+                b.Property<DateTime?>("UpdatedAt")
                     .HasColumnType("TEXT");
 
                 b.HasKey("Id");
@@ -83,7 +83,7 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
                     .HasMaxLength(100)
                     .HasColumnType("TEXT");
 
-                b.Property<DateTime>("UpdatedAt")
+                b.Property<DateTime?>("UpdatedAt")
                     .HasColumnType("TEXT");
 
                 b.Property<string>("Zip")
@@ -123,7 +123,7 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
                     .HasMaxLength(100)
                     .HasColumnType("TEXT");
 
-                b.Property<DateTime>("UpdatedAt")
+                b.Property<DateTime?>("UpdatedAt")
                     .HasColumnType("TEXT");
 
                 b.HasKey("Id");
@@ -165,7 +165,7 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
                 b.Property<Guid>("TeamMemberId")
                     .HasColumnType("TEXT");
 
-                b.Property<DateTime>("UpdatedAt")
+                b.Property<DateTime?>("UpdatedAt")
                     .HasColumnType("TEXT");
 
                 b.HasKey("Id");
@@ -216,7 +216,7 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
                 b.Property<int>("Status")
                     .HasColumnType("INTEGER");
 
-                b.Property<DateTime>("UpdatedAt")
+                b.Property<DateTime?>("UpdatedAt")
                     .HasColumnType("TEXT");
 
                 b.Property<string>("Username")
@@ -248,7 +248,6 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
                     .HasColumnType("TEXT");
 
                 b.Property<string>("Description")
-                    .IsRequired()
                     .HasMaxLength(200)
                     .HasColumnType("TEXT");
 
@@ -267,7 +266,7 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
                 b.Property<double>("Time")
                     .HasColumnType("REAL");
 
-                b.Property<DateTime>("UpdatedAt")
+                b.Property<DateTime?>("UpdatedAt")
                     .HasColumnType("TEXT");
 
                 b.HasKey("Id");

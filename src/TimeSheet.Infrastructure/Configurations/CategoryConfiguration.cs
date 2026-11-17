@@ -19,8 +19,6 @@ public class CategoryConfiguration : IEntityTypeConfiguration<Category>
         builder.Property(c => c.CreatedAt)
             .IsRequired();
 
-        builder.Property(c => c.UpdatedAt)
-            .IsRequired();
 
         builder.HasMany(c => c.TimeEntries)
             .WithOne(te => te.Category)

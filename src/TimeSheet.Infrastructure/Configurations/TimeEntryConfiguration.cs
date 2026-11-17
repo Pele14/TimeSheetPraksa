@@ -24,15 +24,12 @@ namespace TimeSheet.Infrastructure.Configurations
                 .IsRequired();
                 
             builder.Property(te => te.Description)
-                .IsRequired()
                 .HasMaxLength(200);
             
 
             builder.Property(te => te.CreatedAt)
                 .IsRequired();    
 
-            builder.Property(te => te.UpdatedAt)
-                .IsRequired();  
 
             builder.HasQueryFilter(te => !te.IsDeleted);    
                     

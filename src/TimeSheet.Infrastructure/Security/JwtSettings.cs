@@ -1,4 +1,4 @@
-namespace TimeSheet.Application.Auth;
+namespace TimeSheet.Infrastructure.Security;
 
 public class JwtSettings
 {

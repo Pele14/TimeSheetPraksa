@@ -2,14 +2,14 @@
 using TimeSheet.Domain.Interfaces;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
-using TimeSheet.Application.Auth;
+using TimeSheet.Application.Common;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
 
 
 
 
-namespace TimeSheet.Application.Auth;
+namespace TimeSheet.Infrastructure.Security;
 
     public class TokenService : ITokenService
     {
@@ -24,14 +24,14 @@ namespace TimeSheet.Application.Auth;
             signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
         }
 
-        public string GenerateToken(string userId, string role)
+        public string GenerateToken(Guid userId, string role)
         {
             
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim(ClaimTypes.NameIdentifier, userId),
+                    new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
                     new Claim(ClaimTypes.Role, role)
                     
                 }),

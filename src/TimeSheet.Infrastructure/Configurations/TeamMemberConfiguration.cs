@@ -38,8 +38,6 @@ namespace TimeSheet.Infrastructure.Configurations;
             builder.Property(tm => tm.CreatedAt)
                 .IsRequired();
 
-            builder.Property(tm => tm.UpdatedAt)
-                .IsRequired();
 
             builder.HasMany(tm => tm.TimeEntries)
                 .WithOne(te => te.TeamMember)

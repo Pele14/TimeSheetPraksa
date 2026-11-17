@@ -23,9 +23,6 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
         builder.Property(p => p.CreatedAt)
             .IsRequired();
 
-        builder.Property(p => p.UpdatedAt)
-            .IsRequired();
-
         builder.HasMany(p => p.TimeEntries)
             .WithOne(te => te.Project)
             .HasForeignKey(te => te.ProjectId)

@@ -1,10 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using Timesheet.Domain.Entities;
-using TimeSheet.Domain.Interfaces;
 using TimeSheet.Infrastructure.Persistence;
+using TimeSheet.Domain.Interfaces;
+using TimeSheet.Infrastructure.Mappers;
+
 
 namespace TimeSheet.Infrastructure.Repositories;
-/*
+
 public class TeamMemberRepository : ITeamMemberRepository
 {
     private readonly AppDbContext _context;
@@ -14,30 +16,27 @@ public class TeamMemberRepository : ITeamMemberRepository
         _context = context;
     }
 
-    public async Task<TeamMember> GetByIdAsync(Guid id)
+    public async Task<TeamMemberEntity?> GetByIdAsync(Guid id)
     {
-        if(await _context.TeamMembers.FindAsync(id) is TeamMember teamMember)
-        {
-            return teamMember;
-        }
-
-        throw new InvalidOperationException("Team member not found.");
+       var entity= await _context.TeamMembers.FindAsync();
+       return entity?.MapToDomain();
     }
 
-    public async Task<IEnumerable<TeamMember>> GetAllAsync()
+    public async Task<IEnumerable<TeamMemberEntity>> GetAllAsync()
     {
-        return await _context.TeamMembers.ToListAsync();
+        var entities= await _context.TeamMembers.ToListAsync();
+        return entities.Select(e=> e.MapToDomain()).ToList();
     }
 
-    public async Task AddAsync(TeamMember teamMember)
+    public async Task AddAsync(TeamMemberEntity teamMember)
     {
-        await _context.TeamMembers.AddAsync(teamMember);
+        await _context.TeamMembers.AddAsync(teamMember.MapToEntity());
         await _context.SaveChangesAsync();
     }
 
-    public async Task UpdateAsync(TeamMember teamMember)
+    public async Task UpdateAsync(TeamMemberEntity teamMember)
     {
-        _context.TeamMembers.Update(teamMember);
+        _context.TeamMembers.Update(teamMember.MapToEntity());
         await _context.SaveChangesAsync();
     }
 
@@ -49,5 +48,16 @@ public class TeamMemberRepository : ITeamMemberRepository
             _context.TeamMembers.Remove(teamMember);
             await _context.SaveChangesAsync();
         }
+        else 
+        throw new KeyNotFoundException("Id ne posoji");
     }
-}*/
+    public async Task<TeamMemberEntity?> GetByEmailAsync(string email)
+    {   
+        var normalized=email.Trim().ToLowerInvariant();
+        var entity=await _context.TeamMembers.FirstOrDefaultAsync(t=> t.Email==normalized);
+
+        return entity?.MapToDomain();
+
+    }
+}
+
