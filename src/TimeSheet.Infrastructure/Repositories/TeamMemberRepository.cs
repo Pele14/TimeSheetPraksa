@@ -18,7 +18,7 @@ public class TeamMemberRepository : ITeamMemberRepository
 
     public async Task<TeamMemberEntity?> GetByIdAsync(Guid id)
     {
-       var entity= await _context.TeamMembers.FindAsync();
+       var entity= await _context.TeamMembers.FindAsync(id);
        return entity?.MapToDomain();
     }
 
@@ -36,7 +36,10 @@ public class TeamMemberRepository : ITeamMemberRepository
 
     public async Task UpdateAsync(TeamMemberEntity teamMember)
     {
-        _context.TeamMembers.Update(teamMember.MapToEntity());
+      var entity = await _context.TeamMembers.FindAsync(teamMember.Id)
+        ?? throw new KeyNotFoundException($"Član tima {teamMember.Id} ne postoji.");
+
+        teamMember.UpdateEntity(entity);
         await _context.SaveChangesAsync();
     }
 
@@ -59,5 +62,12 @@ public class TeamMemberRepository : ITeamMemberRepository
         return entity?.MapToDomain();
 
     }
+    public async Task<bool> ExistsByEmailAsync(string email)
+{
+    var normalized = email.Trim().ToLowerInvariant();
+
+        return await _context.TeamMembers
+        .AnyAsync(t => t.Email == normalized);
+}
 }
 

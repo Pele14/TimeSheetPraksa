@@ -13,4 +13,6 @@ namespace TimeSheet.Domain.Interfaces;
         Task DeleteAsync(Guid id);
 
         Task<TeamMemberEntity?>GetByEmailAsync(string email);
+        Task<bool> ExistsByEmailAsync(string email);
+
     }

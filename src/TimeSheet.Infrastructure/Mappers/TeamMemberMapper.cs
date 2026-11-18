@@ -28,12 +28,11 @@ public static class TeamMemberMapper
     
         => new TeamMemberEntity(TeamMember.Id, TeamMember.Name, TeamMember.Username, TeamMember.Email, TeamMember.PasswordHash, TeamMember.HoursPerWeek, TeamMember.Role, TeamMember.Status);
 
-    public static void UpdateEntity(this TeamMember TeamMember, TeamMemberEntity entity)
+    public static void UpdateEntity(this TeamMemberEntity entity, TeamMember TeamMember)
     {
         TeamMember.Name=entity.Name;
         TeamMember.Username=entity.Username;
         TeamMember.Email=entity.Email;
-        TeamMember.PasswordHash=entity.PasswordHash;
         TeamMember.HoursPerWeek=entity.HoursPerWeek;
         TeamMember.Role=entity.Role;
         TeamMember.Status=entity.Status;

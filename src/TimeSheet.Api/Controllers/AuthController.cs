@@ -20,14 +20,9 @@ public class AuthController: ControllerBase
     [HttpPost("login")]
     public async Task<ActionResult<string>>Login(LoginDTO dto)
     {
-        try
-        {
+       
             return Ok(await AuthService.LoginAsync(dto));
-        }
-        catch(UnauthorizedException ex)
-        {
-            return Unauthorized(new{message=ex.Message});
-        }
+        
 
     }
 }
