@@ -1,4 +1,5 @@
-using TimeSheet.Application.Common;
+
+using TimeSheet.Core.Security;
 
 namespace TimeSheet.Infrastructure.Security;
 

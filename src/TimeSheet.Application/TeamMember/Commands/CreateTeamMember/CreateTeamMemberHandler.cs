@@ -1,10 +1,10 @@
 
 using MediatR;
 using Timesheet.Domain.Entities;
-using TimeSheet.Application.Common;
 using TimeSheet.Application.Common.Exceptions;
 using TimeSheet.Application.TeamMember.DTOs;
-using TimeSheet.Domain.Interfaces;
+using TimeSheet.Core.Repositories;
+using TimeSheet.Core.Security;
 
 namespace TimeSheet.Application.TeamMember.Commands.CreateTeamMember;
 

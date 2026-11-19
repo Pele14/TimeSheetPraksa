@@ -2,7 +2,7 @@ using MediatR;
 using TimeSheet.Application.Common.Exceptions;
 using TimeSheet.Application.TeamMember.DTOs;
 using TimeSheet.Application.TeamMember.Queries.GetTeamMembers;
-using TimeSheet.Domain.Interfaces;
+using TimeSheet.Core.Repositories;
 
 namespace TimeSheet.Application.TeamMember.Queries.GetTeamMemberById;
 

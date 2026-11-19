@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using TimeSheet.Application.Common;
-using TimeSheet.Domain.Interfaces;
+using TimeSheet.Core.Repositories;
+using TimeSheet.Core.Security;
 using TimeSheet.Infrastructure.Persistence;
 using TimeSheet.Infrastructure.Repositories;
 using TimeSheet.Infrastructure.Security;

@@ -2,7 +2,7 @@
 using System.Net;
 using Microsoft.EntityFrameworkCore;
 using Timesheet.Infrastructure.DBEntities;
-using TimeSheet.Application.Common;
+using TimeSheet.Core.Security;
 
 namespace TimeSheet.Infrastructure.Persistence;
 

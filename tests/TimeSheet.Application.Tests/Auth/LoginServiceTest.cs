@@ -1,55 +1,108 @@
-
 using Moq;
 using Timesheet.Domain.Entities;
 using TimeSheet.Application.Auth;
 using TimeSheet.Application.Auth.DTOs;
-using TimeSheet.Application.Common;
 using TimeSheet.Application.Common.Exceptions;
-using TimeSheet.Domain.Interfaces;
+using TimeSheet.Core.Repositories;
+using TimeSheet.Core.Security;
 
 namespace TimeSheet.Application.Tests.Auth;
 
 [TestFixture]
 public class LoginServiceTests
 {
-    private Mock<ITeamMemberRepository> repositoryMock = null!;
-    private Mock<IPasswordHasher> passwordHasherMock = null!;
-
-    private Mock<ITokenService> tokenServiceMock = null!;
-    private AuthService authService = null!;
+    private LoginServiceTestContext context = null!;
 
     [SetUp]
     public void SetUp()
     {
-        repositoryMock = new Mock<ITeamMemberRepository>();
-        passwordHasherMock = new Mock<IPasswordHasher>();
-        tokenServiceMock = new Mock<ITokenService>();
-
-        authService = new AuthService(
-            tokenServiceMock.Object,
-
-            passwordHasherMock.Object,
-            repositoryMock.Object
-
-        );
+        context = new LoginServiceTestContext();
     }
-    private static TeamMemberEntity CreateMember()
+
+    [Test]
+    public async Task LoginAsync_Valid()
     {
-        return new TeamMemberEntity
-        (
-            Guid.NewGuid(),
-            "Aleksa",
-            "aleksa123",
-            "aleksa.pele03@gmail.com",
-            "hashed",
-            40,
-            Role.Admin,
-            MemberStatus.Active
+        context
+            .WithMemberExisting()
+            .WithCorrectPassword();
 
-        );
+        var result = await context.AuthService.LoginAsync(context.CreateLoginDto());
+
+        Assert.That(result, Is.EqualTo(LoginServiceTestContext.Token));
     }
 
-    private static LoginDTO CreateLoginDto(string email = "aleksa.pele03@gmail.com", string password = "test123")
+    [Test]
+    public void LoginAsync_EmailNotFound()
+    {
+        context.WithMemberNotFound();
+
+        Assert.ThrowsAsync<UnauthorizedException>(() =>
+            context.AuthService.LoginAsync(context.CreateLoginDto()));
+
+        context.VerifyTokenNotGenerated();
+    }
+
+    [Test]
+    public void LoginAsync_WrongPassword()
+    {
+        context
+            .WithMemberExisting()
+            .WithWrongPassword();
+
+        Assert.ThrowsAsync<UnauthorizedException>(() =>
+            context.AuthService.LoginAsync(
+                context.CreateLoginDto(password: LoginServiceTestContext.WrongPassword)));
+
+        context.VerifyTokenNotGenerated();
+    }
+
+    [Test]
+    public async Task LoginAsync_Normalized()
+    {
+        context
+            .WithMemberExisting()
+            .WithCorrectPassword();
+
+        var result = await context.AuthService.LoginAsync(
+            context.CreateLoginDto(email: "  AleksA.PeLE03@gmail.COM  "));
+
+        Assert.That(result, Is.EqualTo(LoginServiceTestContext.Token));
+        context.RepositoryMock.Verify(r => r.GetByEmailAsync(LoginServiceTestContext.Email), Times.Once);
+    }
+}
+
+public class LoginServiceTestContext
+{
+    public const string Email = "aleksa.pele03@gmail.com";
+    public const string Password = "test123";
+    public const string WrongPassword = "pogresna";
+    public const string PasswordHash = "hashed";
+    public const string Token = "jwtfake";
+
+    public TeamMemberEntity Member { get; }
+
+    public Mock<ITeamMemberRepository> RepositoryMock { get; } = new();
+    public Mock<IPasswordHasher> PasswordHasherMock { get; } = new();
+    public Mock<ITokenService> TokenServiceMock { get; } = new();
+    public AuthService AuthService { get; }
+
+    public LoginServiceTestContext()
+    {
+        AuthService = new AuthService(
+            TokenServiceMock.Object,
+            PasswordHasherMock.Object,
+            RepositoryMock.Object);
+
+        Member = new TeamMemberEntity(
+            Guid.NewGuid(), "Aleksa", "aleksa123", Email,
+            PasswordHash, 40, Role.Admin, MemberStatus.Active);
+
+        TokenServiceMock
+            .Setup(t => t.GenerateToken(Member.Id, It.IsAny<string>()))
+            .Returns(Token);
+    }
+
+    public LoginDTO CreateLoginDto(string email = Email, string password = Password)
     {
         return new LoginDTO
         {
@@ -57,79 +110,47 @@ public class LoginServiceTests
             Password = password
         };
     }
-    [Test]
-    public async Task LoginAsync_Valid()
+
+    public LoginServiceTestContext WithMemberExisting()
     {
+        RepositoryMock
+            .Setup(r => r.GetByEmailAsync(Email))
+            .ReturnsAsync(Member);
 
-        var member = CreateMember();
-        repositoryMock
-            .Setup(r => r.GetByEmailAsync(member.Email))
-            .ReturnsAsync(member);
-
-        passwordHasherMock
-            .Setup(h => h.Verify("test123", member.PasswordHash))
-            .Returns(true);
-        tokenServiceMock
-            .Setup(t => t.GenerateToken(member.Id, It.IsAny<string>()))
-            .Returns("jwtfake");
-
-        var result = await authService.LoginAsync(CreateLoginDto());
-
-        Assert.That(result, Is.EqualTo("jwtfake"));
-
+        return this;
     }
-    [Test]
-    public void LoginAsync_EmailNotFound()
-    {
 
-        repositoryMock
+    public LoginServiceTestContext WithMemberNotFound()
+    {
+        RepositoryMock
             .Setup(r => r.GetByEmailAsync(It.IsAny<string>()))
             .ReturnsAsync((TeamMemberEntity?)null);
 
-        Assert.ThrowsAsync<UnauthorizedException>(() =>
-            authService.LoginAsync(CreateLoginDto()));
+        return this;
+    }
 
-        tokenServiceMock.Verify(
+    public LoginServiceTestContext WithCorrectPassword()
+    {
+        PasswordHasherMock
+            .Setup(h => h.Verify(Password, PasswordHash))
+            .Returns(true);
+
+        return this;
+    }
+
+    public LoginServiceTestContext WithWrongPassword()
+    {
+        PasswordHasherMock
+            .Setup(h => h.Verify(WrongPassword, PasswordHash))
+            .Returns(false);
+
+        return this;
+    }
+
+    public void VerifyTokenNotGenerated()
+    {
+        TokenServiceMock.Verify(
             t => t.GenerateToken(It.IsAny<Guid>(), It.IsAny<string>()),
             Times.Never);
     }
-    [Test]
-    public void LoginAsync_WrongPassword()
-    {
-
-        var member = CreateMember();
-        repositoryMock
-           .Setup(r => r.GetByEmailAsync(member.Email));
-
-        passwordHasherMock
-                .Setup(h => h.Verify("pogresna", member.PasswordHash));
-
-        Assert.ThrowsAsync<UnauthorizedException>(() =>
-          authService.LoginAsync(CreateLoginDto(password: "pogresna")));
-
-        tokenServiceMock.Verify(
-            t => t.GenerateToken(It.IsAny<Guid>(), It.IsAny<string>()),
-            Times.Never);
-    }
-    public async Task LoginAsync_Normalized()
-    {
-
-        var member = CreateMember();
-        repositoryMock
-            .Setup(r => r.GetByEmailAsync(member.Email));
-
-        passwordHasherMock
-            .Setup(h => h.Verify("test123", member.PasswordHash));
-
-        tokenServiceMock
-            .Setup(t => t.GenerateToken(member.Id, It.IsAny<string>()))
-            .Returns("jwtfake");
-
-        var result = await authService.LoginAsync(CreateLoginDto(email: "AleksA.PeLE03@gmail.COM"));
-
-        Assert.That(result, Is.EqualTo("jwtfake"));
-
-    }
-
-
 }

@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TimeSheet.Domain\TimeSheet.Domain.csproj" />
+    <ProjectReference Include="..\TimeSheet.Core\TimeSheet.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

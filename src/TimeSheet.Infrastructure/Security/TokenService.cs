@@ -1,10 +1,10 @@
 
-using TimeSheet.Domain.Interfaces;
+using TimeSheet.Core.Repositories;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
-using TimeSheet.Application.Common;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
+using TimeSheet.Core.Security;
 
 
 

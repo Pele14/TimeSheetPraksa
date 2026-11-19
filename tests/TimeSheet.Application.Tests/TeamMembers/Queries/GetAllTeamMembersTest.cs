@@ -1,25 +1,84 @@
 using Moq;
 using Timesheet.Domain.Entities;
-using TimeSheet.Application.Common.Exceptions;
-
-using TimeSheet.Application.TeamMember.Queries.GetTeamMemberById;
 using TimeSheet.Application.TeamMember.Queries.GetTeamMembers;
-using TimeSheet.Domain.Interfaces;
+using TimeSheet.Core.Repositories;
 
-namespace TimeSheet.Application.Tests.TeamMembers.Commands.Queries;
-
+namespace TimeSheet.Application.Tests.TeamMembers.Queries;
 
 [TestFixture]
 public class GetAllTeamMemberHandlerTests
 {
-    private Mock<ITeamMemberRepository> _repositoryMock = null!;
-    private GetTeamMembersHandler _handler = null!;
+    private GetAllTeamMemberTestContext context = null!;
 
     [SetUp]
     public void SetUp()
     {
-        _repositoryMock = new Mock<ITeamMemberRepository>();
-        _handler = new GetTeamMembersHandler(_repositoryMock.Object);
+        context = new GetAllTeamMemberTestContext();
+    }
+
+    [Test]
+    public async Task Handle_MembersExist()
+    {
+        context.WithMembers();
+
+        var result = await context.Handler.Handle(context.CreateQuery(), CancellationToken.None);
+
+        Assert.That(result, Has.Count.EqualTo(2));
+        Assert.That(result[0].Id, Is.EqualTo(context.Members[0].Id));
+        Assert.That(result[1].Id, Is.EqualTo(context.Members[1].Id));
+        Assert.That(result[0].Name, Is.EqualTo(context.Members[0].Name));
+        Assert.That(result[1].Name, Is.EqualTo(context.Members[1].Name));
+    }
+
+    [Test]
+    public async Task Handle_NoMembers()
+    {
+        context.WithNoMembers();
+
+        var result = await context.Handler.Handle(context.CreateQuery(), CancellationToken.None);
+
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result, Is.Empty);
+    }
+}
+
+public class GetAllTeamMemberTestContext
+{
+    public List<TeamMemberEntity> Members { get; } = new()
+    {
+        CreateMember("Aleksa", "aleksa.pele03@gmail.com"),
+        CreateMember("Marko", "marko@gmail.com")
+    };
+
+    public Mock<ITeamMemberRepository> RepositoryMock { get; } = new();
+    public GetTeamMembersHandler Handler { get; }
+
+    public GetAllTeamMemberTestContext()
+    {
+        Handler = new GetTeamMembersHandler(RepositoryMock.Object);
+    }
+
+    public GetTeamMembersQuery CreateQuery()
+    {
+        return new GetTeamMembersQuery();
+    }
+
+    public GetAllTeamMemberTestContext WithMembers()
+    {
+        RepositoryMock
+            .Setup(r => r.GetAllAsync())
+            .ReturnsAsync(Members);
+
+        return this;
+    }
+
+    public GetAllTeamMemberTestContext WithNoMembers()
+    {
+        RepositoryMock
+            .Setup(r => r.GetAllAsync())
+            .ReturnsAsync(new List<TeamMemberEntity>());
+
+        return this;
     }
 
     private static TeamMemberEntity CreateMember(string name, string email)
@@ -28,44 +87,4 @@ public class GetAllTeamMemberHandlerTests
             Guid.NewGuid(), name, name.ToLower(), email,
             "hashed-password", 40, Role.User, MemberStatus.Active);
     }
-
-    [Test]
-    public async Task Handle_MembersExist()
-    {
-        var members = new List<TeamMemberEntity>
-    {
-        CreateMember("Aleksa", "aleksa.pele03@gmail.com"),
-        CreateMember("Marko", "marko@gmail.com")
-
-    };
-
-        _repositoryMock
-            .Setup(r => r.GetAllAsync())
-            .ReturnsAsync(members);
-
-
-        var result = await _handler.Handle(new GetTeamMembersQuery(), CancellationToken.None);
-
-        Assert.That(result, Has.Count.EqualTo(2));
-        Assert.That(result[0].Id, Is.EqualTo(members[0].Id));
-        Assert.That(result[1].Id, Is.EqualTo(members[1].Id));
-        Assert.That(result[0].Name, Is.EqualTo(members[0].Name));
-        Assert.That(result[1].Name, Is.EqualTo(members[1].Name));
-    }
-    [Test]
-    public async Task Handle_noMembers()
-    {
-
-        _repositoryMock
-            .Setup(r => r.GetAllAsync())
-            .ReturnsAsync(new List<TeamMemberEntity>());
-
-
-        var result = await _handler.Handle(new GetTeamMembersQuery(), CancellationToken.None);
-
-        Assert.That(result, Is.Not.Null);
-        Assert.That(result, Is.Empty);
-    }
-
-
 }

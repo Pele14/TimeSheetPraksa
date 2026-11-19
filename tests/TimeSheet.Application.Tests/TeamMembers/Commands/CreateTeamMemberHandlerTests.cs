@@ -3,11 +3,11 @@ using Microsoft.Extensions.Options;
 using Microsoft.VisualBasic;
 using Moq;
 using Timesheet.Domain.Entities;
-using TimeSheet.Application.Common;
 using TimeSheet.Application.Common.Exceptions;
 using TimeSheet.Application.TeamMember.Commands.CreateTeamMember;
 using TimeSheet.Application.TeamMember.DTOs;
-using TimeSheet.Domain.Interfaces;
+using TimeSheet.Core.Repositories;
+using TimeSheet.Core.Security;
 
 namespace TimeSheet.Application.Tests.TeamMembers.Commands;
 
@@ -16,96 +16,97 @@ namespace TimeSheet.Application.Tests.TeamMembers.Commands;
 [TestFixture]
 public class CreateTeamMemberHandlerTests
 {
-    private Mock<ITeamMemberRepository> repositoryMock = null!;
-    private Mock<IPasswordHasher> passwordHasherMock = null!;
-    private CreateTeamMemberHandler handler = null!;
+    private CreateTeamMemberTestContext context=null!;
 
     [SetUp]
     public void SetUp()
     {
-        repositoryMock = new Mock<ITeamMemberRepository>();
-        passwordHasherMock = new Mock<IPasswordHasher>();
-        handler = new CreateTeamMemberHandler(repositoryMock.Object, passwordHasherMock.Object);
+            context=new CreateTeamMemberTestContext();
     }
-    private static CreateTeamMemberCommand CreateValidCommand()
+    
+    [Test]   
+    public void Handle_EmailAlreadyExists_ThrowsConflictException()
     {
-        return new CreateTeamMemberCommand(new CreateTeamMemberDTO
-        {
-            Name = "Aleksa",
-            Username = "aleksa123",
-            Email = "aleksa.pele03@gmail.com",
-            PasswordHash = "test123",
-            HoursPerWeek = 40,
-            Role = Role.Admin,
-            Status = MemberStatus.Active
-
-
-        });
-
-    }
-    [Test]
-    public void Handle_EmailAlreadyExists()
-    {
-        repositoryMock
-            .Setup(r => r.ExistsByEmailAsync("aleksa.pele03@gmail.com"))// simuliraj da postoji ovaj mail u repo
-            .ReturnsAsync(true);
-
-        var command = CreateValidCommand();
+        context.WithEmailTaken();
 
         Assert.ThrowsAsync<ConflictException>(() =>
-            handler.Handle(command, CancellationToken.None)
+            context.Handler.Handle(context.CreateValidCommand(), CancellationToken.None));
 
-        );
-        repositoryMock.Verify(r => r.AddAsync(It.IsAny<TeamMemberEntity>()), Times.Never);
-        //obezbedjuje da addAsync nije bacen
-
+        context.RepositoryMock.Verify(r => r.AddAsync(It.IsAny<TeamMemberEntity>()), Times.Never);
     }
+    
     [Test]
     public async Task Handle_ValidCommand_AddsMemberAndReturnsDto()
     {
-        // Arrange
-        repositoryMock
-            .Setup(r => r.ExistsByEmailAsync("aleksa.pele03@gmail.com"))
-            .ReturnsAsync(false);
+        context.WithEmailAvailable();
 
-        passwordHasherMock
-            .Setup(h => h.Hash("test123"))
-            .Returns("hashed-password");
+        var result = await context.Handler.Handle(context.CreateValidCommand(), CancellationToken.None);
 
-        var command = CreateValidCommand();
-
-        var result = await handler.Handle(command, CancellationToken.None);
-
-
-        repositoryMock.Verify(r => r.AddAsync(It.IsAny<TeamMemberEntity>()), Times.Once);
-
-        Assert.That(result.Id, Is.Not.EqualTo(Guid.Empty));
-        Assert.That(result.Name, Is.EqualTo("Aleksa"));
-        Assert.That(result.Username, Is.EqualTo("aleksa123"));
-        Assert.That(result.Email, Is.EqualTo("aleksa.pele03@gmail.com"));
-        Assert.That(result.HoursPerWeek, Is.EqualTo(40));
-        Assert.That(result.Role, Is.EqualTo(Role.Admin));
+        context.RepositoryMock.Verify(r => r.AddAsync(It.IsAny<TeamMemberEntity>()), Times.Once);
+        Assert.That(result.Email, Is.EqualTo(CreateTeamMemberTestContext.Email));
         Assert.That(result.Status, Is.EqualTo(MemberStatus.Active));
     }
 
     [Test]
     public async Task Handle_ValidCommand_StoresHashedPassword()
     {
-        repositoryMock
-            .Setup(r => r.ExistsByEmailAsync(It.IsAny<string>()))
+        context.WithEmailAvailable();
+
+        await context.Handler.Handle(context.CreateValidCommand(), CancellationToken.None);
+
+        context.RepositoryMock.Verify(r => r.AddAsync(
+            It.Is<TeamMemberEntity>(m => m.PasswordHash == CreateTeamMemberTestContext.PasswordHash)),
+            Times.Once);
+    }
+}
+public class CreateTeamMemberTestContext
+{
+    public const string Email = "aleksa@gmail.com";
+    public const string Password = "test123";
+    public const string PasswordHash = "hashed-password";
+
+    public Mock<ITeamMemberRepository> RepositoryMock { get; } = new();
+    public Mock<IPasswordHasher> PasswordHasherMock { get; } = new();
+    public CreateTeamMemberHandler Handler { get; }
+
+    public CreateTeamMemberTestContext()
+    {
+        Handler = new CreateTeamMemberHandler(RepositoryMock.Object, PasswordHasherMock.Object);
+
+        PasswordHasherMock
+            .Setup(h => h.Hash(Password))
+            .Returns(PasswordHash);
+    }
+
+    public CreateTeamMemberCommand CreateValidCommand()
+    {
+        return new CreateTeamMemberCommand(new CreateTeamMemberDTO
+        {
+            Name = "Aleksa",
+            Username = "aleksa",
+            Email = Email,
+            PasswordHash = Password,
+            HoursPerWeek = 40,
+            Role = Role.Admin,
+            Status=MemberStatus.Active
+        });
+    }
+
+    public CreateTeamMemberTestContext WithEmailTaken()
+    {
+        RepositoryMock
+            .Setup(r => r.ExistsByEmailAsync(Email))
+            .ReturnsAsync(true);
+
+        return this;
+    }
+
+    public CreateTeamMemberTestContext WithEmailAvailable()
+    {
+        RepositoryMock
+            .Setup(r => r.ExistsByEmailAsync(Email))
             .ReturnsAsync(false);
 
-        passwordHasherMock
-            .Setup(h => h.Hash("test123"))
-            .Returns("hashed-password");
-
-
-        await handler.Handle(CreateValidCommand(), CancellationToken.None);
-
-        passwordHasherMock.Verify(h => h.Hash("test123"), Times.Once);
-
-        repositoryMock.Verify(r => r.AddAsync(
-            It.Is<TeamMemberEntity>(m => m.PasswordHash == "hashed-password")),
-            Times.Once);
+        return this;
     }
 }

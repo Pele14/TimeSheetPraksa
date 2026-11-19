@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Timesheet.Domain.Entities;
 using TimeSheet.Infrastructure.Persistence;
-using TimeSheet.Domain.Interfaces;
+using TimeSheet.Core.Repositories;
 using TimeSheet.Infrastructure.Mappers;
 
 

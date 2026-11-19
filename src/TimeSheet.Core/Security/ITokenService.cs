@@ -1,4 +1,4 @@
-namespace TimeSheet.Application.Common;
+namespace TimeSheet.Core.Security;
 
 public interface ITokenService
 {

@@ -1,6 +1,6 @@
 using MediatR;
 using TimeSheet.Application.TeamMember.DTOs;
-using TimeSheet.Domain.Interfaces;
+using TimeSheet.Core.Repositories;
 
 namespace TimeSheet.Application.TeamMember.Queries.GetTeamMembers;
 

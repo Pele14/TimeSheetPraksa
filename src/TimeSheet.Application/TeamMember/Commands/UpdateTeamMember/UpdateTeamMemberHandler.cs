@@ -1,7 +1,7 @@
 using MediatR;
 using TimeSheet.Application.Common.Exceptions;
 
-using TimeSheet.Domain.Interfaces;
+using TimeSheet.Core.Repositories;
 
 namespace TimeSheet.Application.TeamMember.Commands.UpdateTeamMember;
 

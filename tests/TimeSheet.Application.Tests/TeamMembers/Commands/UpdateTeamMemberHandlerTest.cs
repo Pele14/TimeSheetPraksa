@@ -3,34 +3,105 @@ using Timesheet.Domain.Entities;
 using TimeSheet.Application.Common.Exceptions;
 using TimeSheet.Application.TeamMember.Commands.UpdateTeamMember;
 using TimeSheet.Application.TeamMember.DTOs;
-using TimeSheet.Domain.Interfaces;
+using TimeSheet.Core.Repositories;
 
 namespace TimeSheet.Application.Tests.TeamMembers.Commands;
-
 
 [TestFixture]
 public class UpdateTeamMemberHandlerTests
 {
-    private Mock<ITeamMemberRepository> _repositoryMock = null!;
-    private UpdateTeamMemberHandler _handler = null!;
+    private UpdateTeamMemberTestContext context = null!;
 
     [SetUp]
     public void SetUp()
     {
-        _repositoryMock = new Mock<ITeamMemberRepository>();
-        _handler = new UpdateTeamMemberHandler(_repositoryMock.Object);
+        context = new UpdateTeamMemberTestContext();
     }
 
-    private static TeamMemberEntity CreateExistingMember(Guid id)
+    [Test]
+    public void Handle_MemberNotFound_ThrowsNotFoundException()
     {
-        return new TeamMemberEntity(
-            id, "Aleksa", "aleksa123", "aleksa.pele03@gmail.com",
-            "hashed-password", 40, Role.User, MemberStatus.Active);
+        context.WithMemberNotFound();
+
+        Assert.ThrowsAsync<NotFoundException>(() =>
+            context.Handler.Handle(
+                context.CreateCommand(UpdateTeamMemberTestContext.ExistingEmail),
+                CancellationToken.None));
+
+        context.RepositoryMock.Verify(r => r.UpdateAsync(It.IsAny<TeamMemberEntity>()), Times.Never);
     }
 
-    private static UpdateTeamMemberCommand CreateUpdateCommand(Guid id, string email)
+    [Test]
+    public void Handle_NewEmailTakenByAnotherMember_ThrowsConflictException()
     {
-        return new UpdateTeamMemberCommand(id, new UpdateTeamMemberDto
+        context
+            .WithMemberExisting()
+            .WithEmailTaken(UpdateTeamMemberTestContext.NewEmail);
+
+        Assert.ThrowsAsync<ConflictException>(() =>
+            context.Handler.Handle(
+                context.CreateCommand(UpdateTeamMemberTestContext.NewEmail),
+                CancellationToken.None));
+
+        context.RepositoryMock.Verify(r => r.UpdateAsync(It.IsAny<TeamMemberEntity>()), Times.Never);
+    }
+
+    [Test]
+    public async Task Handle_SameEmail_DoesNotCheckForDuplicate()
+    {
+        context.WithMemberExisting();
+
+        await context.Handler.Handle(
+            context.CreateCommand(UpdateTeamMemberTestContext.ExistingEmail),
+            CancellationToken.None);
+
+        context.RepositoryMock.Verify(r => r.ExistsByEmailAsync(It.IsAny<string>()), Times.Never);
+        context.RepositoryMock.Verify(r => r.UpdateAsync(It.IsAny<TeamMemberEntity>()), Times.Once);
+    }
+
+    [Test]
+    public async Task Handle_ValidCommand_UpdatesMemberWithNewValues()
+    {
+        context
+            .WithMemberExisting()
+            .WithEmailAvailable(UpdateTeamMemberTestContext.NewEmail);
+
+        await context.Handler.Handle(
+            context.CreateCommand(UpdateTeamMemberTestContext.NewEmail),
+            CancellationToken.None);
+
+        context.RepositoryMock.Verify(r => r.UpdateAsync(It.Is<TeamMemberEntity>(m =>
+            m.Id == context.MemberId &&
+            m.Name == "Marko" &&
+            m.Username == "marko123" &&
+            m.Email == UpdateTeamMemberTestContext.NewEmail &&
+            m.HoursPerWeek == 35 &&
+            m.Role == Role.Admin &&
+            m.Status == MemberStatus.Inactive &&
+            m.PasswordHash == UpdateTeamMemberTestContext.PasswordHash)),
+            Times.Once);
+    }
+}
+
+public class UpdateTeamMemberTestContext
+{
+    public const string ExistingEmail = "aleksa.pele03@gmail.com";
+    public const string NewEmail = "marko@gmail.com";
+    public const string PasswordHash = "hashed-password";
+
+    public Guid MemberId { get; } = Guid.NewGuid();
+
+    public Mock<ITeamMemberRepository> RepositoryMock { get; } = new();
+    public UpdateTeamMemberHandler Handler { get; }
+
+    public UpdateTeamMemberTestContext()
+    {
+        Handler = new UpdateTeamMemberHandler(RepositoryMock.Object);
+    }
+
+    public UpdateTeamMemberCommand CreateCommand(string email)
+    {
+        return new UpdateTeamMemberCommand(MemberId, new UpdateTeamMemberDto
         {
             Name = "Marko",
             Username = "marko123",
@@ -41,88 +112,41 @@ public class UpdateTeamMemberHandlerTests
         });
     }
 
-    [Test]
-    public void Handle_MemberNotFound_ThrowsNotFoundException()
+    public UpdateTeamMemberTestContext WithMemberExisting()
     {
-        var id = Guid.NewGuid();
+        RepositoryMock
+            .Setup(r => r.GetByIdAsync(MemberId))
+            .ReturnsAsync(new TeamMemberEntity(
+                MemberId, "Aleksa", "aleksa123", ExistingEmail,
+                PasswordHash, 40, Role.User, MemberStatus.Active));
 
-        _repositoryMock
-            .Setup(r => r.GetByIdAsync(id))
+        return this;
+    }
+
+    public UpdateTeamMemberTestContext WithMemberNotFound()
+    {
+        RepositoryMock
+            .Setup(r => r.GetByIdAsync(MemberId))
             .ReturnsAsync((TeamMemberEntity?)null);
 
-        var command = CreateUpdateCommand(id, "aleksa.pele03@gmail.com");
-
-        Assert.ThrowsAsync<NotFoundException>(() =>
-            _handler.Handle(command, CancellationToken.None));
-
-        _repositoryMock.Verify(r => r.UpdateAsync(It.IsAny<TeamMemberEntity>()), Times.Never);
+        return this;
     }
-    [Test]
-    public void Handle_NewEmailTakenByAnotherMember_ThrowsConflictException()
+
+    public UpdateTeamMemberTestContext WithEmailTaken(string email)
     {
-        var id = Guid.NewGuid();
-
-        _repositoryMock
-            .Setup(r => r.GetByIdAsync(id))
-            .ReturnsAsync(CreateExistingMember(id));
-
-        _repositoryMock
-            .Setup(r => r.ExistsByEmailAsync("marko@gmail.com"))
+        RepositoryMock
+            .Setup(r => r.ExistsByEmailAsync(email))
             .ReturnsAsync(true);
 
-        var command = CreateUpdateCommand(id, "marko@gmail.com");
-
-        Assert.ThrowsAsync<ConflictException>(() =>
-            _handler.Handle(command, CancellationToken.None));
-
-        _repositoryMock.Verify(r => r.UpdateAsync(It.IsAny<TeamMemberEntity>()), Times.Never);
+        return this;
     }
-    [Test]
-    public async Task Handle_SameEmail_DoesNotCheckForDuplicate()
+
+    public UpdateTeamMemberTestContext WithEmailAvailable(string email)
     {
-
-        var id = Guid.NewGuid();
-
-        _repositoryMock
-            .Setup(r => r.GetByIdAsync(id))
-            .ReturnsAsync(CreateExistingMember(id));
-
-        var command = CreateUpdateCommand(id, "aleksa.pele03@gmail.com");
-
-        await _handler.Handle(command, CancellationToken.None);
-
-
-        _repositoryMock.Verify(r => r.ExistsByEmailAsync(It.IsAny<string>()), Times.Never);
-        _repositoryMock.Verify(r => r.UpdateAsync(It.IsAny<TeamMemberEntity>()), Times.Once);
-    }
-    [Test]
-    public async Task Handle_ValidCommand_UpdatesMemberWithNewValues()
-    {
-
-        var id = Guid.NewGuid();
-
-        _repositoryMock
-            .Setup(r => r.GetByIdAsync(id))
-            .ReturnsAsync(CreateExistingMember(id));
-
-        _repositoryMock
-            .Setup(r => r.ExistsByEmailAsync("marko@gmail.com"))
+        RepositoryMock
+            .Setup(r => r.ExistsByEmailAsync(email))
             .ReturnsAsync(false);
 
-        var command = CreateUpdateCommand(id, "marko@gmail.com");
-
-        await _handler.Handle(command, CancellationToken.None);
-
-        _repositoryMock.Verify(r => r.UpdateAsync(It.Is<TeamMemberEntity>(m =>
-            m.Id == id &&
-            m.Name == "Marko" &&
-            m.Username == "marko123" &&
-            m.Email == "marko@gmail.com" &&
-            m.HoursPerWeek == 35 &&
-            m.Role == Role.Admin &&
-            m.Status == MemberStatus.Inactive &&
-            m.PasswordHash == "hashed-password")),
-            Times.Once);
+        return this;
     }
-
 }

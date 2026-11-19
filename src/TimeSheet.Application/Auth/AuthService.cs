@@ -1,8 +1,9 @@
 
 using TimeSheet.Application.Auth.DTOs;
-using TimeSheet.Application.Common;
+
 using TimeSheet.Application.Common.Exceptions;
-using TimeSheet.Domain.Interfaces;
+using TimeSheet.Core.Repositories;
+using TimeSheet.Core.Security;
 
 namespace TimeSheet.Application.Auth;
 
@@ -23,9 +24,10 @@ public class AuthService : IAuthService
 
 
     public async Task<string> LoginAsync(LoginDTO request)
-    {
-        var entity = await TeamMemberRepository.GetByEmailAsync(request.Email);
-        if (entity is null)
+    {   
+        var email=request.Email.Trim().ToLowerInvariant();
+        var entity = await TeamMemberRepository.GetByEmailAsync(email);
+        if (entity is null )
         {
             throw new UnauthorizedException("Wrong email");
 
