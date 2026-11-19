@@ -12,12 +12,12 @@ public class GetTeamMembersHandler : IRequestHandler<GetTeamMembersQuery, List<T
 
     public GetTeamMembersHandler(ITeamMemberRepository teamMemberRepository)
     {
-        TeamMemberRepository=teamMemberRepository;
+        TeamMemberRepository = teamMemberRepository;
     }
     public async Task<List<TeamMemberDTO>> Handle(GetTeamMembersQuery request, CancellationToken cancellationToken)
     {
-        var members=await TeamMemberRepository.GetAllAsync();
+        var members = await TeamMemberRepository.GetAllAsync();
 
-       return members.Select(m => m.ToDTO()).ToList();
+        return members.Select(m => m.ToDTO()).ToList();
     }
 }

@@ -14,12 +14,12 @@ public static class DependencyInjection
     {
         services.AddDbContext<AppDbContext>(options =>
             options.UseSqlite(configuration.GetConnectionString("DefaultConnection")));
-        services.AddScoped<ITeamMemberRepository, TeamMemberRepository>(); 
+        services.AddScoped<ITeamMemberRepository, TeamMemberRepository>();
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.Configure<JwtSettings>(configuration.GetSection(JwtSettings.SectionName));
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<DataSeeder>();
         return services;
-        
+
     }
 }

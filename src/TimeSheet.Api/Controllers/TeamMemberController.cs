@@ -13,46 +13,46 @@ namespace TimeSheet.Api.Controllers;
 [ApiController]
 [Authorize]
 [Route("api/teammembers")]
-public class TeamMembersController: ControllerBase
+public class TeamMembersController : ControllerBase
 {
     private readonly IMediator Mediator;
 
     public TeamMembersController(IMediator mediator)
     {
-        Mediator=mediator;
+        Mediator = mediator;
     }
 
-[HttpGet]
-public async Task<ActionResult<List<TeamMemberDTO>>> GetAll(CancellationToken cancellationToken)
+    [HttpGet]
+    public async Task<ActionResult<List<TeamMemberDTO>>> GetAll(CancellationToken cancellationToken)
     {
         return Ok(await Mediator.Send(new GetTeamMembersQuery(), cancellationToken));
     }
 
-[HttpGet("{id:guid}")]
-public async Task<ActionResult<TeamMemberDTO>> GetById(Guid id, CancellationToken cancellationToken)
+    [HttpGet("{id:guid}")]
+    public async Task<ActionResult<TeamMemberDTO>> GetById(Guid id, CancellationToken cancellationToken)
     {
         return Ok(await Mediator.Send(new GetTeamMemberByIdQuery(id), cancellationToken));
- 
- 
+
+
     }
 
-[HttpPost]
-public async Task<ActionResult<TeamMemberDTO>>Create(CreateTeamMemberDTO dto, CancellationToken cancellationToken)
+    [HttpPost]
+    public async Task<ActionResult<TeamMemberDTO>> Create(CreateTeamMemberDTO dto, CancellationToken cancellationToken)
     {
-        var result=await Mediator.Send(new CreateTeamMemberCommand(dto), cancellationToken);
-        return CreatedAtAction(nameof(GetById), new{id= result.Id}, result);
+        var result = await Mediator.Send(new CreateTeamMemberCommand(dto), cancellationToken);
+        return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
 
     }
-[HttpDelete("{id:guid}")]
-    public async Task<ActionResult>Delete(Guid id, CancellationToken cancellationToken)
+    [HttpDelete("{id:guid}")]
+    public async Task<ActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
         await Mediator.Send(new DeleteTeamMemberCommand(id), cancellationToken);
         return NoContent();
 
     }
 
-[HttpPut("{id:guid}")]
-    public async Task<ActionResult>Update(Guid id, UpdateTeamMemberDto dto, CancellationToken cancellationToken)
+    [HttpPut("{id:guid}")]
+    public async Task<ActionResult> Update(Guid id, UpdateTeamMemberDto dto, CancellationToken cancellationToken)
     {
         await Mediator.Send(new UpdateTeamMemberCommand(id, dto), cancellationToken);
         return NoContent();

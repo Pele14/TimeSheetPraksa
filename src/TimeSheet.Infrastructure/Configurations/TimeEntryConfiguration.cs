@@ -12,29 +12,29 @@ namespace TimeSheet.Infrastructure.Configurations
 
             builder.HasKey(te => te.Id);
 
-            builder.Property(te=>te.Date)
+            builder.Property(te => te.Date)
                 .IsRequired();
-                
+
             builder.Property(te => te.Time)
                 .IsRequired();
-                
+
 
 
             builder.Property(te => te.Overtime)
                 .IsRequired();
-                
+
             builder.Property(te => te.Description)
                 .HasMaxLength(200);
-            
+
 
             builder.Property(te => te.CreatedAt)
-                .IsRequired();    
+                .IsRequired();
 
 
-            builder.HasQueryFilter(te => !te.IsDeleted);    
-                    
+            builder.HasQueryFilter(te => !te.IsDeleted);
 
-            
+
+
         }
     }
 }

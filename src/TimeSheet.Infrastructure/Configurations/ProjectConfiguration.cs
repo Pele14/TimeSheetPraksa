@@ -17,7 +17,7 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
         builder.Property(p => p.Description)
             .HasMaxLength(500);
 
-        builder.Property(p=> p.ProjectStatus)
+        builder.Property(p => p.ProjectStatus)
             .IsRequired();
 
         builder.Property(p => p.CreatedAt)
@@ -28,9 +28,9 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
             .HasForeignKey(te => te.ProjectId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasOne(p=>p.TeamMember)
-            .WithMany(tm=>tm.Projects)
-            .HasForeignKey(p=>p.TeamMemberId)
+        builder.HasOne(p => p.TeamMember)
+            .WithMany(tm => tm.Projects)
+            .HasForeignKey(p => p.TeamMemberId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasQueryFilter(p => !p.IsDeleted);

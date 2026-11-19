@@ -21,25 +21,25 @@ builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
 
-var jwtSettings=builder.Configuration.GetSection(JwtSettings.SectionName).Get<JwtSettings>()
+var jwtSettings = builder.Configuration.GetSection(JwtSettings.SectionName).Get<JwtSettings>()
     ?? throw new InvalidOperationException("Missing Jwt section in the configuration");
 
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options=>
+    .AddJwtBearer(options =>
     {
-       options.TokenValidationParameters=new TokenValidationParameters
-       {
-         ValidateIssuer=true,
-         ValidIssuer=jwtSettings.Issuer,
-         ValidateAudience=true,
-         ValidAudience=jwtSettings.Audience,
-         ValidateIssuerSigningKey=true,
-         IssuerSigningKey=new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey)),
-         ValidateLifetime=true,
-         ClockSkew=TimeSpan.Zero
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = jwtSettings.Issuer,
+            ValidateAudience = true,
+            ValidAudience = jwtSettings.Audience,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey)),
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero
 
-       };
+        };
     });
 
 builder.Services.AddAuthorization();
@@ -51,8 +51,8 @@ app.UseExceptionHandler();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    using var scope=app.Services.CreateScope();
-    var seeder=scope.ServiceProvider.GetRequiredService<DataSeeder>();
+    using var scope = app.Services.CreateScope();
+    var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
     await seeder.SeedAsync();
 }
 

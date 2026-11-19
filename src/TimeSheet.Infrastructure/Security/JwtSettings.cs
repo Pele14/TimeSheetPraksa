@@ -2,7 +2,7 @@ namespace TimeSheet.Infrastructure.Security;
 
 public class JwtSettings
 {
-    
+
     public const string SectionName = "Jwt";
     public string SecretKey { get; set; } = string.Empty;
     public string Issuer { get; set; } = string.Empty;

@@ -18,14 +18,14 @@ public class TeamMemberRepository : ITeamMemberRepository
 
     public async Task<TeamMemberEntity?> GetByIdAsync(Guid id)
     {
-       var entity= await _context.TeamMembers.FindAsync(id);
-       return entity?.MapToDomain();
+        var entity = await _context.TeamMembers.FindAsync(id);
+        return entity?.MapToDomain();
     }
 
     public async Task<IEnumerable<TeamMemberEntity>> GetAllAsync()
     {
-        var entities= await _context.TeamMembers.ToListAsync();
-        return entities.Select(e=> e.MapToDomain()).ToList();
+        var entities = await _context.TeamMembers.ToListAsync();
+        return entities.Select(e => e.MapToDomain()).ToList();
     }
 
     public async Task AddAsync(TeamMemberEntity teamMember)
@@ -36,8 +36,8 @@ public class TeamMemberRepository : ITeamMemberRepository
 
     public async Task UpdateAsync(TeamMemberEntity teamMember)
     {
-      var entity = await _context.TeamMembers.FindAsync(teamMember.Id)
-        ?? throw new KeyNotFoundException($"Član tima {teamMember.Id} ne postoji.");
+        var entity = await _context.TeamMembers.FindAsync(teamMember.Id)
+          ?? throw new KeyNotFoundException($"Član tima {teamMember.Id} ne postoji.");
 
         teamMember.UpdateEntity(entity);
         await _context.SaveChangesAsync();
@@ -51,23 +51,23 @@ public class TeamMemberRepository : ITeamMemberRepository
             _context.TeamMembers.Remove(teamMember);
             await _context.SaveChangesAsync();
         }
-        else 
-        throw new KeyNotFoundException("Id ne posoji");
+        else
+            throw new KeyNotFoundException("Id ne posoji");
     }
     public async Task<TeamMemberEntity?> GetByEmailAsync(string email)
-    {   
-        var normalized=email.Trim().ToLowerInvariant();
-        var entity=await _context.TeamMembers.FirstOrDefaultAsync(t=> t.Email==normalized);
+    {
+        var normalized = email.Trim().ToLowerInvariant();
+        var entity = await _context.TeamMembers.FirstOrDefaultAsync(t => t.Email == normalized);
 
         return entity?.MapToDomain();
 
     }
     public async Task<bool> ExistsByEmailAsync(string email)
-{
-    var normalized = email.Trim().ToLowerInvariant();
+    {
+        var normalized = email.Trim().ToLowerInvariant();
 
         return await _context.TeamMembers
         .AnyAsync(t => t.Email == normalized);
-}
+    }
 }
 

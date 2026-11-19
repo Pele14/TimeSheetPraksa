@@ -7,4 +7,8 @@
   <Folder Name="/src/TimeSheet.Application/">
     <Project Path="src/TimeSheet.Application/TimeSheet.Aplication.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/TimeSheet.Application.Tests/TimeSheet.Application.Tests.csproj" />
+    <Project Path="tests/TimeSheet.Domain.Tests/TimeSheet.Domain.Tests.csproj" />
+  </Folder>
 </Solution>

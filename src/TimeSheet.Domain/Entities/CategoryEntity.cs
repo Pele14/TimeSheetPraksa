@@ -2,19 +2,19 @@
 
 namespace Timesheet.Domain.Entities;
 
-  public class CategoryEntity 
+public class CategoryEntity
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; }
+
+
+
+    public CategoryEntity(Guid id, string name)
     {
-        public Guid Id { get; set; }
-        public string Name { get; set; }
 
-
-
-        public CategoryEntity(Guid id, string name)
-        {
-            
         Id = id;
         Name = name;
-        }
-        
-
     }
+
+
+}

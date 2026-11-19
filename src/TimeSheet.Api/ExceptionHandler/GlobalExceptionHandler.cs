@@ -22,11 +22,11 @@ public class GlobalExceptionHandler : IExceptionHandler
     {
         var (statusCode, title) = exception switch
         {
-            NotFoundException     => (StatusCodes.Status404NotFound, "Resource not found"),
-            ConflictException     => (StatusCodes.Status409Conflict, "Conflict"),
+            NotFoundException => (StatusCodes.Status404NotFound, "Resource not found"),
+            ConflictException => (StatusCodes.Status409Conflict, "Conflict"),
             UnauthorizedException => (StatusCodes.Status401Unauthorized, "Unauthorized"),
-            ArgumentException     => (StatusCodes.Status400BadRequest, "Bad request"),
-            _                     => (StatusCodes.Status500InternalServerError, "Server error")
+            ArgumentException => (StatusCodes.Status400BadRequest, "Bad request"),
+            _ => (StatusCodes.Status500InternalServerError, "Server error")
         };
 
         if (statusCode == StatusCodes.Status500InternalServerError)
