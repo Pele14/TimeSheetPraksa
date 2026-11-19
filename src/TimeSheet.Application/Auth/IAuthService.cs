@@ -1,10 +1,11 @@
-using TimeSheet.Application.Auth.DTOs;
+using TimeSheet.Application.Requests.AuthRequests;
+using TimeSheet.Application.Responses.AuthResponses;
 
 namespace TimeSheet.Application.Auth;
 
 public interface IAuthService
 {
-    Task<string> LoginAsync(LoginDTO dto);
+    Task<LoginResponse> LoginAsync(LoginRequest dto);
 
     Task<string> ChangePasswordAsync(string username, string oldPassword, string newPassword);
 

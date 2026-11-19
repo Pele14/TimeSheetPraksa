@@ -16,16 +16,16 @@ public class UpdateTeamMemberHandler : IRequestHandler<UpdateTeamMemberCommand>
 
     }
 
-    public async Task Handle(UpdateTeamMemberCommand request, CancellationToken cancellationToken)
+    public async Task Handle(UpdateTeamMemberCommand command, CancellationToken cancellationToken)
     {
-        var entity = await TeamMemberRepository.GetByIdAsync(request.Id) ??
+        var entity = await TeamMemberRepository.GetByIdAsync(command.Id) ??
         throw new NotFoundException("TeamMember doesnt exist");
 
-        var dto = request.Dto;
-        var email = dto.Email.Trim().ToLowerInvariant();
+        var request = command.Request;
+        var email = request.Email.Trim().ToLowerInvariant();
         if (entity.Email != email && await TeamMemberRepository.ExistsByEmailAsync(email))
             throw new ConflictException("Email is already in use");
-        entity.Update(dto.Name, dto.Username, dto.Email, dto.HoursPerWeek, dto.Role, dto.Status);
+        entity.Update(request.Name, request.Username, request.Email, request.HoursPerWeek, request.Role, request.Status);
         await TeamMemberRepository.UpdateAsync(entity);
     }
 }

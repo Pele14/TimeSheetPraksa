@@ -4,8 +4,8 @@ using Microsoft.VisualBasic;
 using Moq;
 using Timesheet.Domain.Entities;
 using TimeSheet.Application.Common.Exceptions;
+using TimeSheet.Application.Requests.TeamMemberRequests;
 using TimeSheet.Application.TeamMember.Commands.CreateTeamMember;
-using TimeSheet.Application.TeamMember.DTOs;
 using TimeSheet.Core.Repositories;
 using TimeSheet.Core.Security;
 
@@ -80,12 +80,12 @@ public class CreateTeamMemberTestContext
 
     public CreateTeamMemberCommand CreateValidCommand()
     {
-        return new CreateTeamMemberCommand(new CreateTeamMemberDTO
+        return new CreateTeamMemberCommand(new CreateTeamMemberRequest
         {
             Name = "Aleksa",
             Username = "aleksa",
             Email = Email,
-            PasswordHash = Password,
+            Password = Password,
             HoursPerWeek = 40,
             Role = Role.Admin,
             Status=MemberStatus.Active

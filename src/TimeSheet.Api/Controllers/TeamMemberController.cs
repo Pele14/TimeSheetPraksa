@@ -1,10 +1,11 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TimeSheet.Application.Requests.TeamMemberRequests;
+using TimeSheet.Application.Responses.TeamMemberResponses;
 using TimeSheet.Application.TeamMember.Commands.CreateTeamMember;
 using TimeSheet.Application.TeamMember.Commands.DeleteTeamMember;
 using TimeSheet.Application.TeamMember.Commands.UpdateTeamMember;
-using TimeSheet.Application.TeamMember.DTOs;
 using TimeSheet.Application.TeamMember.Queries.GetTeamMemberById;
 using TimeSheet.Application.TeamMember.Queries.GetTeamMembers;
 
@@ -23,13 +24,13 @@ public class TeamMembersController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<TeamMemberDTO>>> GetAll(CancellationToken cancellationToken)
+    public async Task<ActionResult<TeamMembersResponse>> GetAll(CancellationToken cancellationToken)
     {
         return Ok(await Mediator.Send(new GetTeamMembersQuery(), cancellationToken));
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<ActionResult<TeamMemberDTO>> GetById(Guid id, CancellationToken cancellationToken)
+    public async Task<ActionResult<TeamMemberResponse>> GetById(Guid id, CancellationToken cancellationToken)
     {
         return Ok(await Mediator.Send(new GetTeamMemberByIdQuery(id), cancellationToken));
 
@@ -37,9 +38,9 @@ public class TeamMembersController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<TeamMemberDTO>> Create(CreateTeamMemberDTO dto, CancellationToken cancellationToken)
+    public async Task<ActionResult<TeamMemberResponse>> Create(CreateTeamMemberRequest request, CancellationToken cancellationToken)
     {
-        var result = await Mediator.Send(new CreateTeamMemberCommand(dto), cancellationToken);
+        var result = await Mediator.Send(new CreateTeamMemberCommand(request), cancellationToken);
         return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
 
     }
@@ -52,9 +53,9 @@ public class TeamMembersController : ControllerBase
     }
 
     [HttpPut("{id:guid}")]
-    public async Task<ActionResult> Update(Guid id, UpdateTeamMemberDto dto, CancellationToken cancellationToken)
+    public async Task<ActionResult> Update(Guid id, UpdateTeamMemberRequest request, CancellationToken cancellationToken)
     {
-        await Mediator.Send(new UpdateTeamMemberCommand(id, dto), cancellationToken);
+        await Mediator.Send(new UpdateTeamMemberCommand(id, request), cancellationToken);
         return NoContent();
 
     }

@@ -1,8 +1,8 @@
 using Moq;
 using Timesheet.Domain.Entities;
 using TimeSheet.Application.Auth;
-using TimeSheet.Application.Auth.DTOs;
 using TimeSheet.Application.Common.Exceptions;
+using TimeSheet.Application.Requests.AuthRequests;
 using TimeSheet.Core.Repositories;
 using TimeSheet.Core.Security;
 
@@ -26,9 +26,9 @@ public class LoginServiceTests
             .WithMemberExisting()
             .WithCorrectPassword();
 
-        var result = await context.AuthService.LoginAsync(context.CreateLoginDto());
+        var result = await context.AuthService.LoginAsync(context.CreateLoginRequest());
 
-        Assert.That(result, Is.EqualTo(LoginServiceTestContext.Token));
+        Assert.That(result.Token, Is.EqualTo(LoginServiceTestContext.Token));
     }
 
     [Test]
@@ -37,7 +37,7 @@ public class LoginServiceTests
         context.WithMemberNotFound();
 
         Assert.ThrowsAsync<UnauthorizedException>(() =>
-            context.AuthService.LoginAsync(context.CreateLoginDto()));
+            context.AuthService.LoginAsync(context.CreateLoginRequest()));
 
         context.VerifyTokenNotGenerated();
     }
@@ -51,7 +51,7 @@ public class LoginServiceTests
 
         Assert.ThrowsAsync<UnauthorizedException>(() =>
             context.AuthService.LoginAsync(
-                context.CreateLoginDto(password: LoginServiceTestContext.WrongPassword)));
+                context.CreateLoginRequest(password: LoginServiceTestContext.WrongPassword)));
 
         context.VerifyTokenNotGenerated();
     }
@@ -64,9 +64,9 @@ public class LoginServiceTests
             .WithCorrectPassword();
 
         var result = await context.AuthService.LoginAsync(
-            context.CreateLoginDto(email: "  AleksA.PeLE03@gmail.COM  "));
+            context.CreateLoginRequest(email: "  AleksA.PeLE03@gmail.COM  "));
 
-        Assert.That(result, Is.EqualTo(LoginServiceTestContext.Token));
+        Assert.That(result.Token, Is.EqualTo(LoginServiceTestContext.Token));
         context.RepositoryMock.Verify(r => r.GetByEmailAsync(LoginServiceTestContext.Email), Times.Once);
     }
 }
@@ -102,9 +102,9 @@ public class LoginServiceTestContext
             .Returns(Token);
     }
 
-    public LoginDTO CreateLoginDto(string email = Email, string password = Password)
+    public LoginRequest CreateLoginRequest(string email = Email, string password = Password)
     {
-        return new LoginDTO
+        return new LoginRequest
         {
             Email = email,
             Password = password

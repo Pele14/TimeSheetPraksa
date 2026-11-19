@@ -1,13 +1,13 @@
 using MediatR;
 using TimeSheet.Application.Common.Exceptions;
-using TimeSheet.Application.TeamMember.DTOs;
+using TimeSheet.Application.Responses.TeamMemberResponses;
 using TimeSheet.Application.TeamMember.Queries.GetTeamMembers;
 using TimeSheet.Core.Repositories;
 
 namespace TimeSheet.Application.TeamMember.Queries.GetTeamMemberById;
 
 
-public class GetTeamMemberByIdHandler : IRequestHandler<GetTeamMemberByIdQuery, TeamMemberDTO>
+public class GetTeamMemberByIdHandler : IRequestHandler<GetTeamMemberByIdQuery, TeamMemberResponse>
 {
     private readonly ITeamMemberRepository TeamMemberRepository;
 
@@ -19,17 +19,15 @@ public class GetTeamMemberByIdHandler : IRequestHandler<GetTeamMemberByIdQuery, 
 
 
 
-    public async Task<TeamMemberDTO> Handle(GetTeamMemberByIdQuery request, CancellationToken cancellationToken)
+    public async Task<TeamMemberResponse> Handle(GetTeamMemberByIdQuery request, CancellationToken cancellationToken)
     {
         var Id = request.id;
 
         var entity = await TeamMemberRepository.GetByIdAsync(Id) ??
         throw new NotFoundException("Entity doesnt exist");
 
-        var dto = entity.ToDTO();
 
-        return dto;
-
+        return entity.ToResponse();
 
     }
 

@@ -23,11 +23,11 @@ public class GetAllTeamMemberHandlerTests
 
         var result = await context.Handler.Handle(context.CreateQuery(), CancellationToken.None);
 
-        Assert.That(result, Has.Count.EqualTo(2));
-        Assert.That(result[0].Id, Is.EqualTo(context.Members[0].Id));
-        Assert.That(result[1].Id, Is.EqualTo(context.Members[1].Id));
-        Assert.That(result[0].Name, Is.EqualTo(context.Members[0].Name));
-        Assert.That(result[1].Name, Is.EqualTo(context.Members[1].Name));
+        Assert.That(result.TeamMembers, Has.Count.EqualTo(2));
+        Assert.That(result.TeamMembers[0].Id, Is.EqualTo(context.Members[0].Id));
+        Assert.That(result.TeamMembers[1].Id, Is.EqualTo(context.Members[1].Id));
+        Assert.That(result.TeamMembers[0].Name, Is.EqualTo(context.Members[0].Name));
+        Assert.That(result.TeamMembers[1].Name, Is.EqualTo(context.Members[1].Name));
     }
 
     [Test]
@@ -37,8 +37,8 @@ public class GetAllTeamMemberHandlerTests
 
         var result = await context.Handler.Handle(context.CreateQuery(), CancellationToken.None);
 
-        Assert.That(result, Is.Not.Null);
-        Assert.That(result, Is.Empty);
+        Assert.That(result.TeamMembers, Is.Not.Null);
+        Assert.That(result.TeamMembers, Is.Empty);
     }
 }
 

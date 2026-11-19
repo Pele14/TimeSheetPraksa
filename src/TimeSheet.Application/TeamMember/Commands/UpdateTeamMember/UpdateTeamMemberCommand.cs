@@ -1,7 +1,7 @@
 using MediatR;
-using TimeSheet.Application.TeamMember.DTOs;
+using TimeSheet.Application.Requests.TeamMemberRequests;
 
 namespace TimeSheet.Application.TeamMember.Commands.UpdateTeamMember;
 
 
-public record UpdateTeamMemberCommand(Guid Id, UpdateTeamMemberDto Dto) : IRequest;
+public record UpdateTeamMemberCommand(Guid Id, UpdateTeamMemberRequest Request) : IRequest;

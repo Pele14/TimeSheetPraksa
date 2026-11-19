@@ -1,7 +1,6 @@
-
-using TimeSheet.Application.Auth.DTOs;
-
 using TimeSheet.Application.Common.Exceptions;
+using TimeSheet.Application.Requests.AuthRequests;
+using TimeSheet.Application.Responses.AuthResponses;
 using TimeSheet.Core.Repositories;
 using TimeSheet.Core.Security;
 
@@ -23,7 +22,7 @@ public class AuthService : IAuthService
     }
 
 
-    public async Task<string> LoginAsync(LoginDTO request)
+    public async Task<LoginResponse> LoginAsync(LoginRequest request)
     {   
         var email=request.Email.Trim().ToLowerInvariant();
         var entity = await TeamMemberRepository.GetByEmailAsync(email);
@@ -38,7 +37,14 @@ public class AuthService : IAuthService
 
         }
         var token = TokenService.GenerateToken(entity.Id, entity.Role.ToString());
-        return token;
+        return new LoginResponse
+        {
+            Token=token,
+            Id=entity.Id,
+            Name=entity.Name,
+            Email=entity.Email,
+            Role=entity.Role
+        };
 
     }
 

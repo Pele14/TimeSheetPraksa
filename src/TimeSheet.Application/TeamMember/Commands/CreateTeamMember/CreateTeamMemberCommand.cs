@@ -1,9 +1,11 @@
 
 using MediatR;
-using TimeSheet.Application.TeamMember.DTOs;
+using TimeSheet.Application.Requests.TeamMemberRequests;
+using TimeSheet.Application.Responses.TeamMemberResponses;
+
 
 namespace TimeSheet.Application.TeamMember.Commands.CreateTeamMember;
 
 
-public record CreateTeamMemberCommand(CreateTeamMemberDTO dto) : IRequest<TeamMemberDTO>;
+public record CreateTeamMemberCommand(CreateTeamMemberRequest Request) : IRequest<TeamMemberResponse>;
 

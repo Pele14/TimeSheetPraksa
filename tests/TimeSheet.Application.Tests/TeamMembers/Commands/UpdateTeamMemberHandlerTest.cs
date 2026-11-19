@@ -1,8 +1,8 @@
 using Moq;
 using Timesheet.Domain.Entities;
 using TimeSheet.Application.Common.Exceptions;
+using TimeSheet.Application.Requests.TeamMemberRequests;
 using TimeSheet.Application.TeamMember.Commands.UpdateTeamMember;
-using TimeSheet.Application.TeamMember.DTOs;
 using TimeSheet.Core.Repositories;
 
 namespace TimeSheet.Application.Tests.TeamMembers.Commands;
@@ -101,7 +101,7 @@ public class UpdateTeamMemberTestContext
 
     public UpdateTeamMemberCommand CreateCommand(string email)
     {
-        return new UpdateTeamMemberCommand(MemberId, new UpdateTeamMemberDto
+        return new UpdateTeamMemberCommand(MemberId, new UpdateTeamMemberRequest
         {
             Name = "Marko",
             Username = "marko123",

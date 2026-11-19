@@ -1,8 +1,8 @@
 
 using MediatR;
-using TimeSheet.Application.TeamMember.DTOs;
+using TimeSheet.Application.Responses.TeamMemberResponses;
 
 namespace TimeSheet.Application.TeamMember.Queries.GetTeamMemberById;
 
 
-public record GetTeamMemberByIdQuery(Guid id) : IRequest<TeamMemberDTO>;
+public record GetTeamMemberByIdQuery(Guid id) : IRequest<TeamMemberResponse>;

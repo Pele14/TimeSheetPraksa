@@ -1,7 +1,9 @@
+
 using Microsoft.AspNetCore.Mvc;
 using TimeSheet.Application.Auth;
-using TimeSheet.Application.Auth.DTOs;
 using TimeSheet.Application.Common.Exceptions;
+using TimeSheet.Application.Requests.AuthRequests;
+using TimeSheet.Application.Responses.AuthResponses;
 
 namespace TimeSheet.Api.Controllers;
 
@@ -18,10 +20,10 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
-    public async Task<ActionResult<string>> Login(LoginDTO dto)
+    public async Task<ActionResult<LoginResponse>> Login(LoginRequest request)
     {
 
-        return Ok(await AuthService.LoginAsync(dto));
+        return Ok(await AuthService.LoginAsync(request));
 
 
     }
