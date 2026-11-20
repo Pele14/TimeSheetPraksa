@@ -19,7 +19,7 @@ public class DataSeeder
         PasswordHasher = passwordHasher;
     }
 
-    public async Task SeedAsync()
+    public async Task SeedAdminAsync()
     {
         var email = "admin@gmail.com";
         var exists = await Db.TeamMembers.IgnoreQueryFilters().AnyAsync(t => t.Email == email);
@@ -40,5 +40,38 @@ public class DataSeeder
 
         });
         await Db.SaveChangesAsync();
+    }
+
+
+    public async Task SeedCategoriesAsync()
+    {
+        var exists=await Db.Categories
+                .IgnoreQueryFilters()
+                .AnyAsync();
+        if(exists)
+            return;
+
+        var names = new[]
+        {
+            "Frontend Development",
+            "Backend Development",
+            "Desing",
+            "Testing",
+            "Meeting",
+            "Project Management"
+        };
+        foreach(var name in names)
+        {
+            Db.Categories.Add(new Category
+            {
+                Id=Guid.NewGuid(),
+                Name=name
+
+
+            });
+
+
+        }
+
     }
 }

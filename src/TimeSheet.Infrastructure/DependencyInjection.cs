@@ -16,6 +16,7 @@ public static class DependencyInjection
             options.UseSqlite(configuration.GetConnectionString("DefaultConnection")));
         services.AddScoped<ITeamMemberRepository, TeamMemberRepository>();
         services.AddScoped<IPasswordHasher, PasswordHasher>();
+        services.AddScoped<IClientRepository, ClientRepository>();
         services.Configure<JwtSettings>(configuration.GetSection(JwtSettings.SectionName));
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<DataSeeder>();

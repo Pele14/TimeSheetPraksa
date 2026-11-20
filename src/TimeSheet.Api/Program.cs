@@ -47,13 +47,19 @@ builder.Services.AddAuthorization();
 var app = builder.Build();
 
 app.UseExceptionHandler();
+using(var scope=app.Services.CreateScope())
+{
+    var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
+    await seeder.SeedCategoriesAsync();
+    if (app.Environment.IsDevelopment())
+    {
+        await seeder.SeedAdminAsync();
+    }
+}
 
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    using var scope = app.Services.CreateScope();
-    var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
-    await seeder.SeedAsync();
 }
 
 app.UseHttpsRedirection();
