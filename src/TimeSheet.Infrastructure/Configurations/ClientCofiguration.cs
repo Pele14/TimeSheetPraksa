@@ -26,16 +26,10 @@ public class ClientConfiguration : IEntityTypeConfiguration<Client>
             .IsRequired()
             .HasMaxLength(20);
 
-        builder.HasOne(c => c.Country)
-            .WithMany(co => co.Clients)
-            .HasForeignKey(c => c.CountryId)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        builder.HasMany(c => c.Projects)
-            .WithOne(p => p.Client)
-            .HasForeignKey(p => p.ClientId)
-            .OnDelete(DeleteBehavior.Restrict);
-
+        builder.Property(c=> c.Country)
+            .HasConversion<string>()
+            .HasMaxLength(50);
+        
         builder.Property(c => c.CreatedAt)
             .IsRequired();
 

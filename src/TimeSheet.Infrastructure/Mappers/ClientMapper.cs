@@ -16,7 +16,7 @@ public static class ClientMapper
             Address = client.Address,
             City = client.City,
             Zip = client.Zip,
-            CountryId = client.CountryEntityId
+            Country=client.Country
 
         };
 
@@ -24,15 +24,15 @@ public static class ClientMapper
 
     public static ClientEntity MapToDomain(this Client client)
 
-        => new ClientEntity(client.Id, client.Name, client.Address, client.City, client.Zip, client.CountryId);
+        => new ClientEntity(client.Id, client.Name, client.Address, client.City, client.Zip, client.Country);
 
-    public static void UpdateEntity(this Client client, ClientEntity entity)
+    public static void UpdateEntity(this ClientEntity entity, Client client)
     {
         client.Name = entity.Name;
         client.Address = entity.Address;
         client.City = entity.City;
         client.Zip = entity.Zip;
-        client.CountryId = client.CountryId;
+        client.Country=entity.Country;
 
     }
 

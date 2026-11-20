@@ -31,8 +31,4 @@ public class GetTeamMemberByIdHandler : IRequestHandler<GetTeamMemberByIdQuery, 
 
     }
 
-    public static implicit operator GetTeamMemberByIdHandler(GetTeamMembersHandler v)
-    {
-        throw new NotImplementedException();
-    }
 }

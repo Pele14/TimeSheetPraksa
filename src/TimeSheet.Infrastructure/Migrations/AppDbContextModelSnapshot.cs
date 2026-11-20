@@ -15,7 +15,7 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
     // If you encounter a merge conflict in the line below, it means you need to
     // discard one of the migration branches and recreate its migrations on top of
     // the other branch. See https://aka.ms/efcore-docs-migrations-conflicts for more info.
-    public override string LastMigrationId => "20261117125952_izmena5";
+    public override string LastMigrationId => "20261120092410_ClientCountryAsEnum";
 
     protected override void BuildModel(ModelBuilder modelBuilder)
     {
@@ -66,7 +66,9 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
                     .HasMaxLength(100)
                     .HasColumnType("TEXT");
 
-                b.Property<Guid>("CountryId")
+                b.Property<string>("Country")
+                    .IsRequired()
+                    .HasMaxLength(50)
                     .HasColumnType("TEXT");
 
                 b.Property<DateTime>("CreatedAt")
@@ -93,42 +95,7 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
 
                 b.HasKey("Id");
 
-                b.HasIndex("CountryId");
-
                 b.ToTable("Clients");
-            });
-
-        modelBuilder.Entity("Timesheet.Infrastructure.DBEntities.Country", b =>
-            {
-                b.Property<Guid>("Id")
-                    .ValueGeneratedOnAdd()
-                    .HasColumnType("TEXT");
-
-                b.Property<string>("Code")
-                    .IsRequired()
-                    .HasMaxLength(10)
-                    .HasColumnType("TEXT");
-
-                b.Property<DateTime>("CreatedAt")
-                    .HasColumnType("TEXT");
-
-                b.Property<DateTime?>("DeletedAt")
-                    .HasColumnType("TEXT");
-
-                b.Property<bool>("IsDeleted")
-                    .HasColumnType("INTEGER");
-
-                b.Property<string>("Name")
-                    .IsRequired()
-                    .HasMaxLength(100)
-                    .HasColumnType("TEXT");
-
-                b.Property<DateTime?>("UpdatedAt")
-                    .HasColumnType("TEXT");
-
-                b.HasKey("Id");
-
-                b.ToTable("Countries");
             });
 
         modelBuilder.Entity("Timesheet.Infrastructure.DBEntities.Project", b =>
@@ -280,23 +247,12 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
                 b.ToTable("TimeEntries");
             });
 
-        modelBuilder.Entity("Timesheet.Infrastructure.DBEntities.Client", b =>
-            {
-                b.HasOne("Timesheet.Infrastructure.DBEntities.Country", "Country")
-                    .WithMany("Clients")
-                    .HasForeignKey("CountryId")
-                    .OnDelete(DeleteBehavior.Restrict)
-                    .IsRequired();
-
-                b.Navigation("Country");
-            });
-
         modelBuilder.Entity("Timesheet.Infrastructure.DBEntities.Project", b =>
             {
                 b.HasOne("Timesheet.Infrastructure.DBEntities.Client", "Client")
                     .WithMany("Projects")
                     .HasForeignKey("ClientId")
-                    .OnDelete(DeleteBehavior.Restrict)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .IsRequired();
 
                 b.HasOne("Timesheet.Infrastructure.DBEntities.TeamMember", "TeamMember")
@@ -345,11 +301,6 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
         modelBuilder.Entity("Timesheet.Infrastructure.DBEntities.Client", b =>
             {
                 b.Navigation("Projects");
-            });
-
-        modelBuilder.Entity("Timesheet.Infrastructure.DBEntities.Country", b =>
-            {
-                b.Navigation("Clients");
             });
 
         modelBuilder.Entity("Timesheet.Infrastructure.DBEntities.Project", b =>
