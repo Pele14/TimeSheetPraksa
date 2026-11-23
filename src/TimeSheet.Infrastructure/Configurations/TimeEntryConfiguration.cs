@@ -29,7 +29,21 @@ namespace TimeSheet.Infrastructure.Configurations
 
             builder.Property(te => te.CreatedAt)
                 .IsRequired();
+            
+            builder.HasOne(te => te.Project)
+                .WithMany(p => p.TimeEntries)
+                .HasForeignKey(te => te.ProjectId)
+                .OnDelete(DeleteBehavior.Restrict);
 
+            builder.HasOne(te => te.Category)
+                .WithMany(c => c.TimeEntries)
+                .HasForeignKey(te => te.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(te => te.TeamMember)
+                .WithMany(tm => tm.TimeEntries)
+                .HasForeignKey(te => te.TeamMemberId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasQueryFilter(te => !te.IsDeleted);
 

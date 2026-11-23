@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using SQLitePCL;
 using Timesheet.Infrastructure.DBEntities;
 namespace TimeSheet.Infrastructure.Configurations;
 
@@ -23,9 +24,9 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
         builder.Property(p => p.CreatedAt)
             .IsRequired();
 
-        builder.HasMany(p => p.TimeEntries)
-            .WithOne(te => te.Project)
-            .HasForeignKey(te => te.ProjectId)
+        builder.HasOne(p => p.Client)
+            .WithMany(c => c.Projects)
+            .HasForeignKey(p=>p.ClientId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(p => p.TeamMember)

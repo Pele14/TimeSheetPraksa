@@ -39,11 +39,6 @@ public class TeamMemberConfiguration : IEntityTypeConfiguration<TeamMember>
             .IsRequired();
 
 
-        builder.HasMany(tm => tm.TimeEntries)
-            .WithOne(te => te.TeamMember)
-            .HasForeignKey(te => te.TeamMemberId)
-            .OnDelete(DeleteBehavior.Restrict);
-
         builder.HasQueryFilter(tm => !tm.IsDeleted);
 
     }

@@ -25,7 +25,7 @@ public static class ProjectMapper
 
         => new ProjectEntity(Project.Id, Project.Name, Project.Description, Project.ProjectStatus, Project.ClientId, Project.TeamMemberId);
 
-    public static void UpdateEntity(this Project Project, ProjectEntity entity)
+    public static void UpdateEntity(this ProjectEntity entity, Project Project)
     {
         Project.Name = entity.Name;
         Project.Description = entity.Description;

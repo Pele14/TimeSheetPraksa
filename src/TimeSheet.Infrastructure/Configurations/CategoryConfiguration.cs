@@ -20,10 +20,6 @@ public class CategoryConfiguration : IEntityTypeConfiguration<Category>
             .IsRequired();
 
 
-        builder.HasMany(c => c.TimeEntries)
-            .WithOne(te => te.Category)
-            .HasForeignKey(te => te.CategoryId);
-
         builder.HasQueryFilter(c => !c.IsDeleted);
 
     }
