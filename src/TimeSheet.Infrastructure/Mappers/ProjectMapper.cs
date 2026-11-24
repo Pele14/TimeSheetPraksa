@@ -7,7 +7,7 @@ namespace TimeSheet.Infrastructure.Mappers;
 
 public static class ProjectMapper
 {
-    public static Project MapToEntity(this ProjectEntity Project)
+    public static Project MapToEntity(this ProjectModel Project)
 
         => new Project
         {
@@ -21,11 +21,11 @@ public static class ProjectMapper
 
 
 
-    public static ProjectEntity MapToDomain(this Project Project)
+    public static ProjectModel MapToDomain(this Project Project)
 
-        => new ProjectEntity(Project.Id, Project.Name, Project.Description, Project.ProjectStatus, Project.ClientId, Project.TeamMemberId);
+        => new ProjectModel(Project.Id, Project.Name, Project.Description, Project.ProjectStatus, Project.ClientId, Project.TeamMemberId);
 
-    public static void UpdateEntity(this ProjectEntity entity, Project Project)
+    public static void UpdateEntity(this ProjectModel entity, Project Project)
     {
         Project.Name = entity.Name;
         Project.Description = entity.Description;

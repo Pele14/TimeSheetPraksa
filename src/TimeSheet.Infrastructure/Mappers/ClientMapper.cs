@@ -7,7 +7,7 @@ namespace TimeSheet.Infrastructure.Mappers;
 
 public static class ClientMapper
 {
-    public static Client MapToEntity(this ClientEntity client)
+    public static Client MapToEntity(this ClientModel client)
 
         => new Client
         {
@@ -22,11 +22,11 @@ public static class ClientMapper
 
 
 
-    public static ClientEntity MapToDomain(this Client client)
+    public static ClientModel MapToDomain(this Client client)
 
-        => new ClientEntity(client.Id, client.Name, client.Address, client.City, client.Zip, client.Country);
+        => new ClientModel(client.Id, client.Name, client.Address, client.City, client.Zip, client.Country);
 
-    public static void UpdateEntity(this ClientEntity entity, Client client)
+    public static void UpdateEntity(this ClientModel entity, Client client)
     {
         client.Name = entity.Name;
         client.Address = entity.Address;

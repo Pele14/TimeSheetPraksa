@@ -74,7 +74,7 @@ public class DeleteClientTestContext
     {
         RepositoryMock
             .Setup(r => r.GetByIdAsync(ClientId))
-            .ReturnsAsync(new ClientEntity(
+            .ReturnsAsync(new ClientModel(
                 ClientId, "VegaIT", "Bulevar Oslobodjenja 1", "Novi Sad",
                 "21000", Country.Serbia));
 
@@ -85,7 +85,7 @@ public class DeleteClientTestContext
     {
         RepositoryMock
             .Setup(r => r.GetByIdAsync(ClientId))
-            .ReturnsAsync((ClientEntity?)null);
+            .ReturnsAsync((ClientModel?)null);
 
         return this;
     }

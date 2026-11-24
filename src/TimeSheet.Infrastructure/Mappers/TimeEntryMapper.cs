@@ -7,7 +7,7 @@ namespace TimeSheet.Infrastructure.Mappers;
 
 public static class TimeEntryMapper
 {
-    public static TimeEntry MapToEntity(this TimeEntryEntity TimeEntry)
+    public static TimeEntry MapToEntity(this TimeEntryModel TimeEntry)
 
         => new TimeEntry
         {
@@ -24,11 +24,11 @@ public static class TimeEntryMapper
 
 
 
-    public static TimeEntryEntity MapToDomain(this TimeEntry TimeEntry)
+    public static TimeEntryModel MapToDomain(this TimeEntry TimeEntry)
 
-        => new TimeEntryEntity(TimeEntry.Id, TimeEntry.Date, TimeEntry.Time, TimeEntry.Overtime, TimeEntry.Description, TimeEntry.CategoryId, TimeEntry.ProjectId, TimeEntry.TeamMemberId);
+        => new TimeEntryModel(TimeEntry.Id, TimeEntry.Date, TimeEntry.Time, TimeEntry.Overtime, TimeEntry.Description, TimeEntry.CategoryId, TimeEntry.ProjectId, TimeEntry.TeamMemberId);
 
-    public static void UpdateEntity(this TimeEntry TimeEntry, TimeEntryEntity entity)
+    public static void UpdateEntity(this TimeEntry TimeEntry, TimeEntryModel entity)
     {
         TimeEntry.Date = entity.Date;
         TimeEntry.Time = entity.Time;

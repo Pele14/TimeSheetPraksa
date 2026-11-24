@@ -9,9 +9,9 @@ namespace TimeSheet.Domain.Tests.Entities;
 [TestFixture]
 public class TeamMemberEnityTests
 {
-    private static TeamMemberEntity CreateValidMember(Guid id)
+    private static TeamMemberModel CreateValidMember(Guid id)
     {
-        return new TeamMemberEntity(
+        return new TeamMemberModel(
              id,
             "Aleksa",
             "aleksa123",
@@ -42,7 +42,7 @@ public class TeamMemberEnityTests
     public void Constructor_InvalidName(string name)
     {
         Assert.Throws<DomainException>(() =>
-            new TeamMemberEntity(Guid.NewGuid(), name, "aleksa123", "aleksa.pele03@gmail.com"
+            new TeamMemberModel(Guid.NewGuid(), name, "aleksa123", "aleksa.pele03@gmail.com"
             , "123", 40, Role.Admin, MemberStatus.Active
              )
         );
@@ -55,7 +55,7 @@ public class TeamMemberEnityTests
     public void Constructor_InvalidEmail(string email)
     {
         Assert.Throws<DomainException>(() =>
-            new TeamMemberEntity(Guid.NewGuid(), "aleksa", "aleksa123", email
+            new TeamMemberModel(Guid.NewGuid(), "aleksa", "aleksa123", email
             , "123", 40, Role.Admin, MemberStatus.Active
              )
         );
@@ -67,7 +67,7 @@ public class TeamMemberEnityTests
     public void Constructor_InvalidUsername(string username)
     {
         Assert.Throws<DomainException>(() =>
-            new TeamMemberEntity(Guid.NewGuid(), "aleksa", username, "aleksa.pele03@gmail.com"
+            new TeamMemberModel(Guid.NewGuid(), "aleksa", username, "aleksa.pele03@gmail.com"
             , "123", 40, Role.Admin, MemberStatus.Active
              )
         );
@@ -78,7 +78,7 @@ public class TeamMemberEnityTests
     public void Constructor_InvalidHours(double hours)
     {
         Assert.Throws<DomainException>(() =>
-            new TeamMemberEntity(Guid.NewGuid(), "aleksa", "aleksa", "aleksa.pele03@gmail.com"
+            new TeamMemberModel(Guid.NewGuid(), "aleksa", "aleksa", "aleksa.pele03@gmail.com"
             , "123", hours, Role.Admin, MemberStatus.Active
              )
         );
@@ -88,7 +88,7 @@ public class TeamMemberEnityTests
     public void Constructor_InvalidRole()
     {
         Assert.Throws<DomainException>(() =>
-            new TeamMemberEntity(
+            new TeamMemberModel(
                 Guid.NewGuid(), "Aleksa", "aleksa123", "aleksa.pele@gmail.com",
                 "123", 40, (Role)99, MemberStatus.Active));
     }
@@ -97,14 +97,14 @@ public class TeamMemberEnityTests
     public void Constructor_InvalidStatusn()
     {
         Assert.Throws<DomainException>(() =>
-            new TeamMemberEntity(
+            new TeamMemberModel(
                 Guid.NewGuid(), "Aleksa", "aleksa123", "aleksa.pele03@gmail.com",
                 "123", 40, Role.Admin, (MemberStatus)99));
     }
     [Test]
     public void Constructor_EmailWithUppercaseAndSpaces_NormalizesEmail()
     {
-        var member = new TeamMemberEntity(
+        var member = new TeamMemberModel(
             Guid.NewGuid(), "Aleksa", "aleksa", "ALeksa.PELE@gmail.COM  ",
             "123", 40, Role.Admin, MemberStatus.Active);
 

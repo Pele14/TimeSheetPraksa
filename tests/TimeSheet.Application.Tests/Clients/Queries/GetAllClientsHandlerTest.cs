@@ -45,10 +45,10 @@ public class GetAllClientsHandlerTests
 
 public class GetAllClientTestContext
 {
-    public List<ClientEntity> Clients { get; } = new()
+    public List<ClientModel> Clients { get; } = new()
     {
-        new ClientEntity(Guid.NewGuid(), "VegaIT", "BulevarOslobodjenja 1", "Novi Sad", "21000", Country.Serbia),
-        new ClientEntity(Guid.NewGuid(), "Continental", "Bulevar Evrope 6", "Beograd", "11000", Country.Austria)
+        new ClientModel(Guid.NewGuid(), "VegaIT", "BulevarOslobodjenja 1", "Novi Sad", "21000", Country.Serbia),
+        new ClientModel(Guid.NewGuid(), "Continental", "Bulevar Evrope 6", "Beograd", "11000", Country.Austria)
     };
 
     public Mock<IClientRepository> RepositoryMock { get; } = new();
@@ -77,7 +77,7 @@ public class GetAllClientTestContext
     {
         RepositoryMock
             .Setup(r => r.GetAllAsync())
-            .ReturnsAsync(new List<ClientEntity>());
+            .ReturnsAsync(new List<ClientModel>());
 
         return this;
     }

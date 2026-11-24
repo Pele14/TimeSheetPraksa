@@ -4,7 +4,7 @@ using TimeSheet.Domain.Exceptions;
 namespace Timesheet.Domain.Entities;
 
 
-public class ProjectEntity
+public class ProjectModel
 {
     public Guid Id { get; set; }
 
@@ -18,7 +18,7 @@ public class ProjectEntity
 
     public Guid TeamMemberId { get; set; }
 
-    public ProjectEntity(Guid id, string name, string? description, ProjectStatus projectStatus, Guid id1, Guid id2)
+    public ProjectModel(Guid id, string name, string? description, ProjectStatus projectStatus, Guid id1, Guid id2)
     {
 
         Validate(name, id1, id2, projectStatus);

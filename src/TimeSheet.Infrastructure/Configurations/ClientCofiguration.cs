@@ -33,7 +33,10 @@ public class ClientConfiguration : IEntityTypeConfiguration<Client>
         builder.Property(c => c.CreatedAt)
             .IsRequired();
 
-
+        builder.HasIndex(c => c.Name)
+               .IsUnique()
+               .HasFilter("IsDeleted = 0");
+               
         builder.HasQueryFilter(c => !c.IsDeleted);
 
     }

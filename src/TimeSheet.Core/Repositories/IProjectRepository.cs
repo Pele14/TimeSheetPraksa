@@ -5,10 +5,10 @@ namespace TimeSheet.Core.Repositories;
 
 public interface IProjectRepository
 {
-    Task<ProjectEntity?> GetByIdAsync(Guid id);
-    Task<IEnumerable<ProjectEntity>> GetAllAsync();
-    Task AddAsync(ProjectEntity ProjectEntity);
-    Task UpdateAsync(ProjectEntity ProjectEntity);
+    Task<ProjectModel?> GetByIdAsync(Guid id);
+    Task<IEnumerable<ProjectModel>> GetAllAsync();
+    Task AddAsync(ProjectModel ProjectEntity);
+    Task UpdateAsync(ProjectModel ProjectEntity);
     Task DeleteAsync(Guid id);
 
     Task<bool> HasTimeEntriesAsync(Guid id);

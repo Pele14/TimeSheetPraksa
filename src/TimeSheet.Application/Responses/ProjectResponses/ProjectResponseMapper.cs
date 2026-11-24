@@ -4,7 +4,7 @@ using TimeSheet.Application.Requests.ProjectResponses;
 namespace TimeSheet.Application.Responses.ProjectResponses;
 public static class ProjectResponseMapper
 {
-    public static ProjectResponse ToResponse(this ProjectEntity project, string clientName) 
+    public static ProjectResponse ToResponse(this ProjectModel project, string clientName) 
     {
         return new ProjectResponse
         {

@@ -16,25 +16,25 @@ public class TeamMemberRepository : ITeamMemberRepository
         _context = context;
     }
 
-    public async Task<TeamMemberEntity?> GetByIdAsync(Guid id)
+    public async Task<TeamMemberModel?> GetByIdAsync(Guid id)
     {
         var entity = await _context.TeamMembers.FindAsync(id);
         return entity?.MapToDomain();
     }
 
-    public async Task<IEnumerable<TeamMemberEntity>> GetAllAsync()
+    public async Task<IEnumerable<TeamMemberModel>> GetAllAsync()
     {
         var entities = await _context.TeamMembers.ToListAsync();
         return entities.Select(e => e.MapToDomain()).ToList();
     }
 
-    public async Task AddAsync(TeamMemberEntity teamMember)
+    public async Task AddAsync(TeamMemberModel teamMember)
     {
         await _context.TeamMembers.AddAsync(teamMember.MapToEntity());
         await _context.SaveChangesAsync();
     }
 
-    public async Task UpdateAsync(TeamMemberEntity teamMember)
+    public async Task UpdateAsync(TeamMemberModel teamMember)
     {
         var entity = await _context.TeamMembers.FindAsync(teamMember.Id)
           ?? throw new KeyNotFoundException($"Član tima {teamMember.Id} ne postoji.");
@@ -54,7 +54,7 @@ public class TeamMemberRepository : ITeamMemberRepository
         else
             throw new KeyNotFoundException("Id ne posoji");
     }
-    public async Task<TeamMemberEntity?> GetByEmailAsync(string email)
+    public async Task<TeamMemberModel?> GetByEmailAsync(string email)
     {
         var normalized = email.Trim().ToLowerInvariant();
         var entity = await _context.TeamMembers.FirstOrDefaultAsync(t => t.Email == normalized);
@@ -67,7 +67,7 @@ public class TeamMemberRepository : ITeamMemberRepository
         var normalized = email.Trim().ToLowerInvariant();
 
         return await _context.TeamMembers
-        .AnyAsync(t => t.Email == normalized);
+        .AnyAsync(t => t.Email.ToLower() == normalized);
     }
 }
 

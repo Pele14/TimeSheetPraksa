@@ -33,7 +33,7 @@ public class CreateClientHandlerTests
         Assert.ThrowsAsync<ConflictException>(() =>
             context.Handler.Handle(context.CreateValidCommand(), CancellationToken.None));
 
-        context.RepositoryMock.Verify(r => r.AddAsync(It.IsAny<ClientEntity>()), Times.Never);
+        context.RepositoryMock.Verify(r => r.AddAsync(It.IsAny<ClientModel>()), Times.Never);
     }
     
     [Test]
@@ -43,7 +43,7 @@ public class CreateClientHandlerTests
 
         var result = await context.Handler.Handle(context.CreateValidCommand(), CancellationToken.None);
 
-        context.RepositoryMock.Verify(r => r.AddAsync(It.IsAny<ClientEntity>()), Times.Once);
+        context.RepositoryMock.Verify(r => r.AddAsync(It.IsAny<ClientModel>()), Times.Once);
         Assert.That(result.Name, Is.EqualTo(CreateClientTestContext.Name));
         Assert.That(result.Address, Is.EqualTo("Bulevar Oslobodjenja 1"));
         Assert.That(result.City, Is.EqualTo("Novi Sad"));

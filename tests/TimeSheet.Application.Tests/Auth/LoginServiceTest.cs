@@ -79,7 +79,7 @@ public class LoginServiceTestContext
     public const string PasswordHash = "hashed";
     public const string Token = "jwtfake";
 
-    public TeamMemberEntity Member { get; }
+    public TeamMemberModel Member { get; }
 
     public Mock<ITeamMemberRepository> RepositoryMock { get; } = new();
     public Mock<IPasswordHasher> PasswordHasherMock { get; } = new();
@@ -93,7 +93,7 @@ public class LoginServiceTestContext
             PasswordHasherMock.Object,
             RepositoryMock.Object);
 
-        Member = new TeamMemberEntity(
+        Member = new TeamMemberModel(
             Guid.NewGuid(), "Aleksa", "aleksa123", Email,
             PasswordHash, 40, Role.Admin, MemberStatus.Active);
 
@@ -124,7 +124,7 @@ public class LoginServiceTestContext
     {
         RepositoryMock
             .Setup(r => r.GetByEmailAsync(It.IsAny<string>()))
-            .ReturnsAsync((TeamMemberEntity?)null);
+            .ReturnsAsync((TeamMemberModel?)null);
 
         return this;
     }

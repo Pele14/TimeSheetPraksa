@@ -4,7 +4,7 @@ using TimeSheet.Application.Requests.ClientRequests;
 namespace TimeSheet.Application.Responses.ClientResponses;
 public static class ClientResponseMapper
 {
-    public static ClientResponse ToResponse(this ClientEntity member) 
+    public static ClientResponse ToResponse(this ClientModel member) 
     {
         return new ClientResponse
         {

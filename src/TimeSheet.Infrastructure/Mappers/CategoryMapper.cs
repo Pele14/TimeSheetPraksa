@@ -8,7 +8,7 @@ namespace TimeSheet.Infrastructure.Mappers;
 
 public static class CategoryMapper
 {
-    public static Category MapToEntity(this CategoryEntity category)
+    public static Category MapToEntity(this CategoryModel category)
 
         => new Category
         {
@@ -19,11 +19,11 @@ public static class CategoryMapper
         };
 
 
-    public static CategoryEntity MapToDomain(this Category category)
+    public static CategoryModel MapToDomain(this Category category)
 
-        => new CategoryEntity(category.Id, category.Name);
+        => new CategoryModel(category.Id, category.Name);
 
-    public static void UpdateEntity(this Category category, CategoryEntity entity)
+    public static void UpdateEntity(this Category category, CategoryModel entity)
     {
         category.Name = entity.Name;
     }

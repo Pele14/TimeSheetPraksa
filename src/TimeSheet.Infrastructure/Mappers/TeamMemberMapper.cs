@@ -7,7 +7,7 @@ namespace TimeSheet.Infrastructure.Mappers;
 
 public static class TeamMemberMapper
 {
-    public static TeamMember MapToEntity(this TeamMemberEntity TeamMember)
+    public static TeamMember MapToEntity(this TeamMemberModel TeamMember)
 
         => new TeamMember
         {
@@ -24,11 +24,11 @@ public static class TeamMemberMapper
 
 
 
-    public static TeamMemberEntity MapToDomain(this TeamMember TeamMember)
+    public static TeamMemberModel MapToDomain(this TeamMember TeamMember)
 
-        => new TeamMemberEntity(TeamMember.Id, TeamMember.Name, TeamMember.Username, TeamMember.Email, TeamMember.PasswordHash, TeamMember.HoursPerWeek, TeamMember.Role, TeamMember.Status);
+        => new TeamMemberModel(TeamMember.Id, TeamMember.Name, TeamMember.Username, TeamMember.Email, TeamMember.PasswordHash, TeamMember.HoursPerWeek, TeamMember.Role, TeamMember.Status);
 
-    public static void UpdateEntity(this TeamMemberEntity entity, TeamMember TeamMember)
+    public static void UpdateEntity(this TeamMemberModel entity, TeamMember TeamMember)
     {
         TeamMember.Name = entity.Name;
         TeamMember.Username = entity.Username;

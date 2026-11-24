@@ -31,7 +31,7 @@ public class CreateTeamMemberHandler : IRequestHandler<CreateTeamMemberCommand, 
         }
         var password = PasswordHasher.Hash(request.Password);
 
-        var member = new TeamMemberEntity(Guid.NewGuid(), request.Name,
+        var member = new TeamMemberModel(Guid.NewGuid(), request.Name,
             request.Username,
              request.Email, password,
              request.HoursPerWeek, request.Role,

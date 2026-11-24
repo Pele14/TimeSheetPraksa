@@ -32,7 +32,7 @@ public class CreateTeamMemberHandlerTests
         Assert.ThrowsAsync<ConflictException>(() =>
             context.Handler.Handle(context.CreateValidCommand(), CancellationToken.None));
 
-        context.RepositoryMock.Verify(r => r.AddAsync(It.IsAny<TeamMemberEntity>()), Times.Never);
+        context.RepositoryMock.Verify(r => r.AddAsync(It.IsAny<TeamMemberModel>()), Times.Never);
     }
     
     [Test]
@@ -42,7 +42,7 @@ public class CreateTeamMemberHandlerTests
 
         var result = await context.Handler.Handle(context.CreateValidCommand(), CancellationToken.None);
 
-        context.RepositoryMock.Verify(r => r.AddAsync(It.IsAny<TeamMemberEntity>()), Times.Once);
+        context.RepositoryMock.Verify(r => r.AddAsync(It.IsAny<TeamMemberModel>()), Times.Once);
         Assert.That(result.Email, Is.EqualTo(CreateTeamMemberTestContext.Email));
         Assert.That(result.Status, Is.EqualTo(MemberStatus.Active));
     }
@@ -55,7 +55,7 @@ public class CreateTeamMemberHandlerTests
         await context.Handler.Handle(context.CreateValidCommand(), CancellationToken.None);
 
         context.RepositoryMock.Verify(r => r.AddAsync(
-            It.Is<TeamMemberEntity>(m => m.PasswordHash == CreateTeamMemberTestContext.PasswordHash)),
+            It.Is<TeamMemberModel>(m => m.PasswordHash == CreateTeamMemberTestContext.PasswordHash)),
             Times.Once);
     }
 }

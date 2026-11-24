@@ -14,25 +14,25 @@ public class ClientRepository : IClientRepository
         _context = context;
     }
 
-    public async Task<ClientEntity?> GetByIdAsync(Guid id)
+    public async Task<ClientModel?> GetByIdAsync(Guid id)
     {
         var entity = await _context.Clients.FindAsync(id);
         return entity?.MapToDomain();
     }
 
-    public async Task<IEnumerable<ClientEntity>> GetAllAsync()
+    public async Task<IEnumerable<ClientModel>> GetAllAsync()
     {
         var entities = await _context.Clients.OrderBy(c=>c.Name).ToListAsync();
         return entities.Select(e => e.MapToDomain()).ToList();
     }
 
-    public async Task AddAsync(ClientEntity client)
+    public async Task AddAsync(ClientModel client)
     {
         await _context.Clients.AddAsync(client.MapToEntity());
         await _context.SaveChangesAsync();
     }
 
-    public async Task UpdateAsync(ClientEntity client)
+    public async Task UpdateAsync(ClientModel client)
     {
         var entity = await _context.Clients.FindAsync(client.Id)
           ?? throw new KeyNotFoundException($"Član tima {client.Id} ne postoji.");
@@ -55,7 +55,7 @@ public class ClientRepository : IClientRepository
     public async Task<bool> ExistsByNameAsync(string name)
     {
         var normalized = name.Trim().ToLower();
-        return await _context.Clients.AnyAsync(t => t.Name == normalized);
+        return await _context.Clients.AnyAsync(t => t.Name.ToLower() == normalized);
 
 
     }

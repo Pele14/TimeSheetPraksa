@@ -3,7 +3,7 @@ using TimeSheet.Domain.Exceptions;
 
 namespace Timesheet.Domain.Entities;
 
-public class ClientEntity
+public class ClientModel
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
@@ -14,7 +14,7 @@ public class ClientEntity
 
     public Country Country { get; set; }
 
-    public ClientEntity(Guid id, string name, string address, string city, string zip, Country country)
+    public ClientModel(Guid id, string name, string address, string city, string zip, Country country)
     {
         Validate(name, address, city, zip, country);
         Id = id;

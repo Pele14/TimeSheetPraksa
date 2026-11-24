@@ -2,7 +2,7 @@ using TimeSheet.Domain.Exceptions;
 
 namespace Timesheet.Domain.Entities;
 
-public class TeamMemberEntity
+public class TeamMemberModel
 {
     public Guid Id { get; set; }
 
@@ -20,7 +20,7 @@ public class TeamMemberEntity
 
     public MemberStatus Status { get; set; }
 
-    public TeamMemberEntity(Guid id, string name, string username, string email, string password, double hours, Role role, MemberStatus status)
+    public TeamMemberModel(Guid id, string name, string username, string email, string password, double hours, Role role, MemberStatus status)
     {
         Validate(name, username, email, hours, role, status);
         Id = id;

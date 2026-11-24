@@ -47,7 +47,7 @@ public class GetClientHandlerTests
 public class GetClientTestContext
 {
     public Guid ClientId { get; } = Guid.NewGuid();
-    public ClientEntity Client { get; }
+    public ClientModel Client { get; }
 
     public Mock<IClientRepository> RepositoryMock { get; } = new();
     public GetClientByIdHandler Handler { get; }
@@ -56,7 +56,7 @@ public class GetClientTestContext
     {
         Handler = new GetClientByIdHandler(RepositoryMock.Object);
 
-        Client = new ClientEntity(
+        Client = new ClientModel(
             ClientId, "VegaIT", "Bulevar Oslobodjenja 1", "Novi Sad",
             "21000", Country.Serbia);
     }
@@ -79,7 +79,7 @@ public class GetClientTestContext
     {
         RepositoryMock
             .Setup(r => r.GetByIdAsync(ClientId))
-            .ReturnsAsync((ClientEntity?)null);
+            .ReturnsAsync((ClientModel?)null);
 
         return this;
     }

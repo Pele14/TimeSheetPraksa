@@ -60,7 +60,7 @@ public class DeleteTeamMemberTestContext
     {
         RepositoryMock
             .Setup(r => r.GetByIdAsync(MemberId))
-            .ReturnsAsync(new TeamMemberEntity(
+            .ReturnsAsync(new TeamMemberModel(
                 MemberId, "Aleksa", "aleksa123", "aleksa.pele03@gmail.com",
                 "hashed-password", 40, Role.User, MemberStatus.Active));
 
@@ -71,7 +71,7 @@ public class DeleteTeamMemberTestContext
     {
         RepositoryMock
             .Setup(r => r.GetByIdAsync(MemberId))
-            .ReturnsAsync((TeamMemberEntity?)null);
+            .ReturnsAsync((TeamMemberModel?)null);
 
         return this;
     }

@@ -44,7 +44,7 @@ public class GetAllTeamMemberHandlerTests
 
 public class GetAllTeamMemberTestContext
 {
-    public List<TeamMemberEntity> Members { get; } = new()
+    public List<TeamMemberModel> Members { get; } = new()
     {
         CreateMember("Aleksa", "aleksa.pele03@gmail.com"),
         CreateMember("Marko", "marko@gmail.com")
@@ -76,14 +76,14 @@ public class GetAllTeamMemberTestContext
     {
         RepositoryMock
             .Setup(r => r.GetAllAsync())
-            .ReturnsAsync(new List<TeamMemberEntity>());
+            .ReturnsAsync(new List<TeamMemberModel>());
 
         return this;
     }
 
-    private static TeamMemberEntity CreateMember(string name, string email)
+    private static TeamMemberModel CreateMember(string name, string email)
     {
-        return new TeamMemberEntity(
+        return new TeamMemberModel(
             Guid.NewGuid(), name, name.ToLower(), email,
             "hashed-password", 40, Role.User, MemberStatus.Active);
     }

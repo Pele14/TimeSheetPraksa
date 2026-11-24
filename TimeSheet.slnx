@@ -11,5 +11,6 @@
   <Folder Name="/tests/">
     <Project Path="tests/TimeSheet.Application.Tests/TimeSheet.Application.Tests.csproj" />
     <Project Path="tests/TimeSheet.Domain.Tests/TimeSheet.Domain.Tests.csproj" />
+    <Project Path="tests/TimeSheet.Infrastructure.Tests/TimeSheet.Infrastructure.Tests.csproj" />
   </Folder>
 </Solution>

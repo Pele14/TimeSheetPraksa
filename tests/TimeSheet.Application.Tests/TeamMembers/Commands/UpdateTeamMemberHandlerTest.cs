@@ -28,7 +28,7 @@ public class UpdateTeamMemberHandlerTests
                 context.CreateCommand(UpdateTeamMemberTestContext.ExistingEmail),
                 CancellationToken.None));
 
-        context.RepositoryMock.Verify(r => r.UpdateAsync(It.IsAny<TeamMemberEntity>()), Times.Never);
+        context.RepositoryMock.Verify(r => r.UpdateAsync(It.IsAny<TeamMemberModel>()), Times.Never);
     }
 
     [Test]
@@ -43,7 +43,7 @@ public class UpdateTeamMemberHandlerTests
                 context.CreateCommand(UpdateTeamMemberTestContext.NewEmail),
                 CancellationToken.None));
 
-        context.RepositoryMock.Verify(r => r.UpdateAsync(It.IsAny<TeamMemberEntity>()), Times.Never);
+        context.RepositoryMock.Verify(r => r.UpdateAsync(It.IsAny<TeamMemberModel>()), Times.Never);
     }
 
     [Test]
@@ -56,7 +56,7 @@ public class UpdateTeamMemberHandlerTests
             CancellationToken.None);
 
         context.RepositoryMock.Verify(r => r.ExistsByEmailAsync(It.IsAny<string>()), Times.Never);
-        context.RepositoryMock.Verify(r => r.UpdateAsync(It.IsAny<TeamMemberEntity>()), Times.Once);
+        context.RepositoryMock.Verify(r => r.UpdateAsync(It.IsAny<TeamMemberModel>()), Times.Once);
     }
 
     [Test]
@@ -70,7 +70,7 @@ public class UpdateTeamMemberHandlerTests
             context.CreateCommand(UpdateTeamMemberTestContext.NewEmail),
             CancellationToken.None);
 
-        context.RepositoryMock.Verify(r => r.UpdateAsync(It.Is<TeamMemberEntity>(m =>
+        context.RepositoryMock.Verify(r => r.UpdateAsync(It.Is<TeamMemberModel>(m =>
             m.Id == context.MemberId &&
             m.Name == "Marko" &&
             m.Username == "marko123" &&
@@ -116,7 +116,7 @@ public class UpdateTeamMemberTestContext
     {
         RepositoryMock
             .Setup(r => r.GetByIdAsync(MemberId))
-            .ReturnsAsync(new TeamMemberEntity(
+            .ReturnsAsync(new TeamMemberModel(
                 MemberId, "Aleksa", "aleksa123", ExistingEmail,
                 PasswordHash, 40, Role.User, MemberStatus.Active));
 
@@ -127,7 +127,7 @@ public class UpdateTeamMemberTestContext
     {
         RepositoryMock
             .Setup(r => r.GetByIdAsync(MemberId))
-            .ReturnsAsync((TeamMemberEntity?)null);
+            .ReturnsAsync((TeamMemberModel?)null);
 
         return this;
     }

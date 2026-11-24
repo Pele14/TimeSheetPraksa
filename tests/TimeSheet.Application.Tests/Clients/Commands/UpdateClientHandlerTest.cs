@@ -29,7 +29,7 @@ public class UpdateClientHandlerTests
                 context.CreateCommand(UpdateClientTestContext.NewName),
                 CancellationToken.None));
 
-        context.RepositoryMock.Verify(r => r.UpdateAsync(It.IsAny<ClientEntity>()), Times.Never);
+        context.RepositoryMock.Verify(r => r.UpdateAsync(It.IsAny<ClientModel>()), Times.Never);
     }
 
     [Test]
@@ -44,7 +44,7 @@ public class UpdateClientHandlerTests
                 context.CreateCommand(UpdateClientTestContext.NewName),
                 CancellationToken.None));
 
-        context.RepositoryMock.Verify(r => r.UpdateAsync(It.IsAny<ClientEntity>()), Times.Never);
+        context.RepositoryMock.Verify(r => r.UpdateAsync(It.IsAny<ClientModel>()), Times.Never);
     }
 
     [Test]
@@ -57,7 +57,7 @@ public class UpdateClientHandlerTests
             CancellationToken.None);
 
         context.RepositoryMock.Verify(r => r.ExistsByNameAsync(It.IsAny<string>()), Times.Never);
-        context.RepositoryMock.Verify(r => r.UpdateAsync(It.IsAny<ClientEntity>()), Times.Once);
+        context.RepositoryMock.Verify(r => r.UpdateAsync(It.IsAny<ClientModel>()), Times.Once);
     }
 
     [Test]
@@ -71,7 +71,7 @@ public class UpdateClientHandlerTests
             context.CreateCommand(UpdateClientTestContext.NewName),
             CancellationToken.None);
 
-        context.RepositoryMock.Verify(r => r.UpdateAsync(It.Is<ClientEntity>(m =>
+        context.RepositoryMock.Verify(r => r.UpdateAsync(It.Is<ClientModel>(m =>
             m.Id == context.ClientId &&
             m.Name == UpdateClientTestContext.NewName &&
             m.Address == "Svetozara Corovica 11" &&
@@ -113,7 +113,7 @@ public class UpdateClientTestContext
     {
         RepositoryMock
             .Setup(r => r.GetByIdAsync(ClientId))
-            .ReturnsAsync(new ClientEntity(
+            .ReturnsAsync(new ClientModel(
                 ClientId, ExistingName, "Bulevar Oslobodjenja 1", "Novi Sad", "21000", Country.Serbia));
 
         return this;
@@ -123,7 +123,7 @@ public class UpdateClientTestContext
     {
         RepositoryMock
             .Setup(r => r.GetByIdAsync(ClientId))
-            .ReturnsAsync((ClientEntity?)null);
+            .ReturnsAsync((ClientModel?)null);
 
         return this;
     }

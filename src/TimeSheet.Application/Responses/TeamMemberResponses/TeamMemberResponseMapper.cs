@@ -3,7 +3,7 @@ using Timesheet.Domain.Entities;
 namespace TimeSheet.Application.Responses.TeamMemberResponses;
 public static class TeamMemberDtoMapper
 {
-    public static TeamMemberResponse ToResponse(this TeamMemberEntity member) //extension metoda na TeamMemberEntity
+    public static TeamMemberResponse ToResponse(this TeamMemberModel member) //extension metoda na TeamMemberEntity
     {
         return new TeamMemberResponse
         {

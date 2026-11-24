@@ -41,7 +41,7 @@ public class CreateProjectHandler : IRequestHandler<CreateProjectCommand, Projec
         _= await TeamMemberRepository.GetByIdAsync(request.LeadID)??
             throw new NotFoundException("Lead not found"); 
 
-        var project = new ProjectEntity(Guid.NewGuid(), request.Name,
+        var project = new ProjectModel(Guid.NewGuid(), request.Name,
              request.Description, ProjectStatus.Active,
              request.ClientId, request.LeadID);
 

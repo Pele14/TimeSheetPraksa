@@ -32,7 +32,7 @@ public class CreateClientHandler : IRequestHandler<CreateClientCommand, ClientRe
             throw new ConflictException("Name already exists");
         }
 
-        var member = new ClientEntity(Guid.NewGuid(), request.Name,
+        var member = new ClientModel(Guid.NewGuid(), request.Name,
              request.Address,
              request.City, request.Zip,
              request.Country);

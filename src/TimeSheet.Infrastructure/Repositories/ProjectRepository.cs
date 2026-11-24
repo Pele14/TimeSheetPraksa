@@ -14,25 +14,25 @@ public class ProjectRepository : IProjectRepository
         _context = context;
     }
 
-    public async Task<ProjectEntity?> GetByIdAsync(Guid id)
+    public async Task<ProjectModel?> GetByIdAsync(Guid id)
     {
         var entity = await _context.Projects.FindAsync(id);
         return entity?.MapToDomain();
     }
 
-    public async Task<IEnumerable<ProjectEntity>> GetAllAsync()
+    public async Task<IEnumerable<ProjectModel>> GetAllAsync()
     {
         var entities = await _context.Projects.OrderBy(c=>c.Name).ToListAsync();
         return entities.Select(e => e.MapToDomain()).ToList();
     }
 
-    public async Task AddAsync(ProjectEntity Project)
+    public async Task AddAsync(ProjectModel Project)
     {
         await _context.Projects.AddAsync(Project.MapToEntity());
         await _context.SaveChangesAsync();
     }
 
-    public async Task UpdateAsync(ProjectEntity Project)
+    public async Task UpdateAsync(ProjectModel Project)
     {
         var entity = await _context.Projects.FindAsync(Project.Id)
           ?? throw new KeyNotFoundException($"Project {Project.Id} ne postoji.");

@@ -29,15 +29,24 @@ public class TeamMemberConfiguration : IEntityTypeConfiguration<TeamMember>
             .HasMaxLength(200);
 
         builder.Property(tm => tm.Role)
+            .HasConversion<string>()
             .IsRequired();
 
         builder.Property(tm => tm.Status)
+            .HasConversion<string>()
             .IsRequired();
 
 
         builder.Property(tm => tm.CreatedAt)
             .IsRequired();
+        
+        builder.HasIndex(tm => tm.Email)
+            .IsUnique()
+            .HasFilter("IsDeleted = 0");
 
+        builder.HasIndex(tm => tm.Username)
+            .IsUnique()
+            .HasFilter("IsDeleted = 0");
 
         builder.HasQueryFilter(tm => !tm.IsDeleted);
 
