@@ -35,7 +35,7 @@ public class ClientRepository : IClientRepository
     public async Task UpdateAsync(ClientModel client)
     {
         var entity = await _context.Clients.FindAsync(client.Id)
-          ?? throw new KeyNotFoundException($"Član tima {client.Id} ne postoji.");
+          ?? throw new KeyNotFoundException($"Client {client.Id} doesnt exist.");
 
         client.UpdateEntity(entity);
         await _context.SaveChangesAsync();
@@ -50,7 +50,7 @@ public class ClientRepository : IClientRepository
             await _context.SaveChangesAsync();
         }
         else
-            throw new KeyNotFoundException("Id ne posoji");
+            throw new KeyNotFoundException("Id doesnt exist");
     }
     public async Task<bool> ExistsByNameAsync(string name)
     {

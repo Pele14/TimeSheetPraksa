@@ -9,9 +9,7 @@ public class ClientModel
     public string Name { get; set; }
     public string Address { get; set; }
     public string City { get; set; }
-
     public string Zip { get; set; }
-
     public Country Country { get; set; }
 
     public ClientModel(Guid id, string name, string address, string city, string zip, Country country)

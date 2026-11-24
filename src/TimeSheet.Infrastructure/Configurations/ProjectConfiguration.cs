@@ -24,6 +24,10 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
         builder.Property(p => p.CreatedAt)
             .IsRequired();
 
+        builder.HasIndex(p => p.Name)
+            .IsUnique()
+            .HasFilter("IsDeleted = 0");
+
         builder.HasOne(p => p.Client)
             .WithMany(c => c.Projects)
             .HasForeignKey(p=>p.ClientId)

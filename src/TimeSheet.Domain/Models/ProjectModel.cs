@@ -7,17 +7,11 @@ namespace Timesheet.Domain.Entities;
 public class ProjectModel
 {
     public Guid Id { get; set; }
-
     public string Name { get; set; }
-
     public string? Description { get; set; }
-
     public ProjectStatus ProjectStatus { get; set; }
-
     public Guid ClientId { get; set; }
-
     public Guid TeamMemberId { get; set; }
-
     public ProjectModel(Guid id, string name, string? description, ProjectStatus projectStatus, Guid id1, Guid id2)
     {
 

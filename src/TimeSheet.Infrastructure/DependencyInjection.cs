@@ -18,6 +18,8 @@ public static class DependencyInjection
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddScoped<IClientRepository, ClientRepository>();
         services.AddScoped<IProjectRepository, ProjectRepository>();
+        services.AddScoped<ICategoryRepository, CategoryRepository>();
+        services.AddScoped<ITimeEntryRepository, TimeEntryRepository>();
         services.Configure<JwtSettings>(configuration.GetSection(JwtSettings.SectionName));
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<DataSeeder>();

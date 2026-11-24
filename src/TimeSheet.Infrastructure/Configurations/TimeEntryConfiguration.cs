@@ -15,7 +15,7 @@ namespace TimeSheet.Infrastructure.Configurations
             builder.Property(te => te.Date)
                 .IsRequired();
 
-            builder.Property(te => te.Time)
+            builder.Property(te => te.Hours)
                 .IsRequired();
 
 
@@ -45,6 +45,8 @@ namespace TimeSheet.Infrastructure.Configurations
                 .HasForeignKey(te => te.TeamMemberId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            builder.HasIndex(te => new { te.TeamMemberId, te.Date });
+            
             builder.HasQueryFilter(te => !te.IsDeleted);
 
 

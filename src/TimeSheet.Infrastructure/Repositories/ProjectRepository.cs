@@ -35,7 +35,7 @@ public class ProjectRepository : IProjectRepository
     public async Task UpdateAsync(ProjectModel Project)
     {
         var entity = await _context.Projects.FindAsync(Project.Id)
-          ?? throw new KeyNotFoundException($"Project {Project.Id} ne postoji.");
+          ?? throw new KeyNotFoundException($"Project {Project.Id} doesnt exist.");
 
         Project.UpdateEntity(entity);
         await _context.SaveChangesAsync();
@@ -50,7 +50,7 @@ public class ProjectRepository : IProjectRepository
             await _context.SaveChangesAsync();
         }
         else
-            throw new KeyNotFoundException("Id ne posoji");
+            throw new KeyNotFoundException("Id doesnt exist");
     }
     public async Task<bool> ExistsByNameAsync(string name)
     {

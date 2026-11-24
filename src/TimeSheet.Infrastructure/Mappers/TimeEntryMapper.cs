@@ -13,7 +13,7 @@ public static class TimeEntryMapper
         {
             Id = TimeEntry.Id,
             Date = TimeEntry.Date,
-            Time = TimeEntry.Time,
+            Hours = TimeEntry.Hours,
             Overtime = TimeEntry.Overtime,
             Description = TimeEntry.Description,
             CategoryId = TimeEntry.CategoryId,
@@ -26,12 +26,12 @@ public static class TimeEntryMapper
 
     public static TimeEntryModel MapToDomain(this TimeEntry TimeEntry)
 
-        => new TimeEntryModel(TimeEntry.Id, TimeEntry.Date, TimeEntry.Time, TimeEntry.Overtime, TimeEntry.Description, TimeEntry.CategoryId, TimeEntry.ProjectId, TimeEntry.TeamMemberId);
+        => new TimeEntryModel(TimeEntry.Id, TimeEntry.Date, TimeEntry.Hours, TimeEntry.Overtime, TimeEntry.Description, TimeEntry.CategoryId, TimeEntry.ProjectId, TimeEntry.TeamMemberId);
 
-    public static void UpdateEntity(this TimeEntry TimeEntry, TimeEntryModel entity)
+    public static void UpdateEntity(this TimeEntryModel entity, TimeEntry TimeEntry)
     {
         TimeEntry.Date = entity.Date;
-        TimeEntry.Time = entity.Time;
+        TimeEntry.Hours = entity.Hours;
         TimeEntry.Overtime = entity.Overtime;
         TimeEntry.Description = entity.Description;
         TimeEntry.CategoryId = entity.CategoryId;

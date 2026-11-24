@@ -37,7 +37,7 @@ public class TeamMemberRepository : ITeamMemberRepository
     public async Task UpdateAsync(TeamMemberModel teamMember)
     {
         var entity = await _context.TeamMembers.FindAsync(teamMember.Id)
-          ?? throw new KeyNotFoundException($"Član tima {teamMember.Id} ne postoji.");
+          ?? throw new KeyNotFoundException($"Team member{teamMember.Id} doesnt exist.");
 
         teamMember.UpdateEntity(entity);
         await _context.SaveChangesAsync();
@@ -52,7 +52,7 @@ public class TeamMemberRepository : ITeamMemberRepository
             await _context.SaveChangesAsync();
         }
         else
-            throw new KeyNotFoundException("Id ne posoji");
+            throw new KeyNotFoundException("Id doesnt exist");
     }
     public async Task<TeamMemberModel?> GetByEmailAsync(string email)
     {
