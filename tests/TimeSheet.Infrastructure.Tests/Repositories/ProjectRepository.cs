@@ -116,11 +116,41 @@ public class ProjectRepositoryTests
         Assert.That(exists, Is.True);
     }
 
-   /* [Test]
-    public async Task HasTimeEntriesAsync()
+    [Test]
+    public async Task DeleteProjectAndTimeEntries()
     {
+        var (client, lead)=await AddParentsAsync();
+        var project= await AddProjectAsync(client.Id, lead.Id);
+        var category= TestData.CreateCategory();
+        var entry=TestData.CreateTimeEntry(project.Id, category.Id, lead.Id);
 
-    }*/
+        using(var context = database.CreateContext())
+        {
+            context.Categories.Add(category);
+            await context.SaveChangesAsync();
+            await new TimeEntryRepository(context).AddAsync(entry);
+        }
+        using(var context= database.CreateContext())
+        {
+            await new ProjectRepository(context).DeleteAsync(project.Id);
+
+        }
+        using(var context = database.CreateContext())
+        {
+            var row=await context.Projects
+                    .IgnoreQueryFilters()
+                    .AsNoTracking()
+                    .SingleAsync(t=> t.Id==project.Id);
+            
+            var entryRow=await context.TimeEntries
+                    .IgnoreQueryFilters()
+                    .AsNoTracking()
+                    .SingleAsync(t=> t.Id==entry.Id);
+
+            Assert.That(row.IsDeleted, Is.True);
+            Assert.That(entryRow.IsDeleted, Is.True);
+        }
+    }
 
     [Test]
     public async Task GetAllAsync_()
@@ -143,20 +173,6 @@ public class ProjectRepositoryTests
         }
     }
 
-
-    [Test]
-    public async Task HasNoTimeEntriesAsync_()
-    {
-        var(client, lead)=await AddParentsAsync();
-        var Project=await AddProjectAsync(client.Id, lead.Id);
-
-        using(var context = database.CreateContext())
-        {
-           var hasEntries= await new ProjectRepository(context).HasTimeEntriesAsync(Project.Id);
-
-            Assert.That(hasEntries, Is.False);
-        }
-    }
 
     [Test]
     public async Task AddAsync_DuplicateName()

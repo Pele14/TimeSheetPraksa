@@ -20,8 +20,7 @@ namespace TimeSheet.Infrastructure.Configurations
 
 
 
-            builder.Property(te => te.Overtime)
-                .IsRequired();
+            builder.Property(te => te.Overtime);
 
             builder.Property(te => te.Description)
                 .HasMaxLength(200);

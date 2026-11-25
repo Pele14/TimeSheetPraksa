@@ -11,8 +11,6 @@ public interface IClientRepository
     Task AddAsync(ClientModel ClientEntity);
     Task UpdateAsync(ClientModel ClientEntity);
     Task DeleteAsync(Guid id);
-
-    Task<bool> HasProjectAsync(Guid id);
     Task<bool> ExistsByNameAsync(string name);
 
 }

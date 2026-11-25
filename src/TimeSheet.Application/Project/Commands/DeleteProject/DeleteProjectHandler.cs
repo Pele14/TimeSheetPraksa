@@ -22,8 +22,6 @@ public class DeleteProjectHandler : IRequestHandler<DeleteProjectCommand>
         var id = request.Id;
         _ = await ProjectRepository.GetByIdAsync(id) 
             ?? throw new NotFoundException("Project doesn't exist");
-        if(await ProjectRepository.HasTimeEntriesAsync(id))
-            throw new ConflictException("Project has time entries and cannot be deleted");
         await ProjectRepository.DeleteAsync(id);
 
     }

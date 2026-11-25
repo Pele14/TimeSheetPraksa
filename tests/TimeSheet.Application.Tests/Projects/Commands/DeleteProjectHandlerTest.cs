@@ -32,8 +32,7 @@ public class DeleteProjectHandlerTests
     [Test]
     public async Task Handle_ProjectWithoutTimeEntries()
     {
-        context.WithProjectExisting()
-                .WithoutTimeEntries();
+        context.WithProjectExisting();
 
         await context.Handler.Handle(context.CreateCommand(), CancellationToken.None);
 
@@ -41,18 +40,7 @@ public class DeleteProjectHandlerTests
     }
 
 
-    
-    [Test]
-    public async Task Handle_ProjectWithProjects()
-    {
-        context.WithProjectExisting().
-                WithTimeEntires();
 
-        Assert.ThrowsAsync<ConflictException>(()=>
-            context.Handler.Handle(context.CreateCommand(), CancellationToken.None));
-
-        context.ProjectRepositoryMock.Verify(r => r.DeleteAsync(context.ProjectId), Times.Never);
-    }
 }
 
 public class DeleteProjectTestContext
@@ -92,23 +80,7 @@ public class DeleteProjectTestContext
         return this;
     }
 
-    public DeleteProjectTestContext WithTimeEntires()
-    {
-        ProjectRepositoryMock
-            .Setup(r=>r.HasTimeEntriesAsync(ProjectId))
-            .ReturnsAsync(true);
 
-        return this;
-    }
-
-     public DeleteProjectTestContext WithoutTimeEntries()
-    {
-        ProjectRepositoryMock
-            .Setup(r=>r.HasTimeEntriesAsync(ProjectId))
-            .ReturnsAsync(false);
-
-        return this;
-    }
 
     public void VerifyProjectNotDeleted()
     {

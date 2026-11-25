@@ -1,6 +1,7 @@
 
 
 using Microsoft.EntityFrameworkCore;
+using NUnit.Framework.Internal;
 using SQLitePCL;
 using Timesheet.Domain.Entities;
 using TimeSheet.Domain.Enums;
@@ -100,6 +101,51 @@ public class ClientRepositoryTests
             Assert.That(result, Is.Null);
         }
     }
+    [Test]
+     public async Task DeleteClientAndProjectAndTimeEntries()
+    {
+        var client=await AddClientAsync();
+        var lead=TestData.CreateMember();
+        var project=TestData.CreateProject(client.Id, lead.Id);
+        var category= TestData.CreateCategory();
+        var entry=TestData.CreateTimeEntry(project.Id, category.Id, lead.Id);
+
+        using(var context = database.CreateContext())
+        {
+            await new TeamMemberRepository(context).AddAsync(lead);
+            await new ProjectRepository(context).AddAsync(project);
+
+            context.Categories.Add(category);
+            await context.SaveChangesAsync();
+            await new TimeEntryRepository(context).AddAsync(entry);
+        }
+        using(var context= database.CreateContext())
+        {
+            await new ClientRepository(context).DeleteAsync(client.Id);
+
+        }
+        using(var context = database.CreateContext())
+        {
+            var row=await context.Clients
+                    .IgnoreQueryFilters()
+                    .AsNoTracking()
+                    .SingleAsync(t=> t.Id==client.Id);
+            
+            var projectRow=await context.Projects
+                    .IgnoreQueryFilters()
+                    .AsNoTracking()
+                    .SingleAsync(t=> t.Id==project.Id);
+            
+            var entryRow=await context.TimeEntries
+                    .IgnoreQueryFilters()
+                    .AsNoTracking()
+                    .SingleAsync(t=> t.Id==entry.Id);
+
+            Assert.That(row.IsDeleted, Is.True);
+            Assert.That(projectRow.IsDeleted, Is.True);
+            Assert.That(entryRow.IsDeleted, Is.True);
+        }
+    }
 
     [Test]
     public async Task ExistsByNameAsync()
@@ -112,37 +158,6 @@ public class ClientRepositoryTests
         Assert.That(exists, Is.True);
     }
 
-    [Test]
-    public async Task HasNoProjectsAsync()
-    {
-        var client=await AddClientAsync();
-
-        using var context=database.CreateContext();
-        var hasProjects=await new ClientRepository(context).HasProjectAsync(client.Id);
-
-        Assert.That(hasProjects, Is.False);
-
-    }
-
-    [Test]
-    public async Task HasProjectsAsync_()
-    {
-        var client=await AddClientAsync();
-        var lead=TestData.CreateMember();
-
-        using(var context = database.CreateContext())
-        {
-            await new TeamMemberRepository(context).AddAsync(lead);
-            await new ProjectRepository(context).AddAsync(TestData.CreateProject(client.Id, lead.Id));
-
-        }
-        using(var context = database.CreateContext())
-        {
-            var hasProjects=await new ClientRepository(context).HasProjectAsync(client.Id);
-
-            Assert.That(hasProjects, Is.True);
-        }
-    }
 
     [Test]
     public async Task AddAsync_DuplicateName()

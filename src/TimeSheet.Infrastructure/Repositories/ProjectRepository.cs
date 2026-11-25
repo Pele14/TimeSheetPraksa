@@ -46,6 +46,10 @@ public class ProjectRepository : IProjectRepository
         var Project = await _context.Projects.FindAsync(id);
         if (Project != null)
         {
+            var timEntries=await _context.TimeEntries
+                    .Where(te=>te.ProjectId==id)
+                    .ToListAsync();
+            _context.TimeEntries.RemoveRange(timEntries);        
             _context.Projects.Remove(Project);
             await _context.SaveChangesAsync();
         }
@@ -59,8 +63,5 @@ public class ProjectRepository : IProjectRepository
 
 
     }
-    public async Task<bool> HasTimeEntriesAsync(Guid Projectid)
-    {
-        return await _context.TimeEntries.AnyAsync(te=>te.ProjectId==Projectid);    
-    }
+
 }

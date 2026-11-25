@@ -1,5 +1,4 @@
 
-using System.Net;
 using Microsoft.EntityFrameworkCore;
 using Timesheet.Infrastructure.DBEntities;
 using TimeSheet.Core.Security;
@@ -55,7 +54,7 @@ public class DataSeeder
         {
             "Frontend Development",
             "Backend Development",
-            "Desing",
+            "Design",
             "Testing",
             "Meeting",
             "Project Management"
@@ -69,9 +68,7 @@ public class DataSeeder
 
 
             });
-
-
         }
-
+        await Db.SaveChangesAsync();
     }
 }

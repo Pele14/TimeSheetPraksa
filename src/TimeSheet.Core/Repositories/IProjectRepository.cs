@@ -10,8 +10,6 @@ public interface IProjectRepository
     Task AddAsync(ProjectModel ProjectEntity);
     Task UpdateAsync(ProjectModel ProjectEntity);
     Task DeleteAsync(Guid id);
-
-    Task<bool> HasTimeEntriesAsync(Guid id);
     Task<bool> ExistsByNameAsync(string name);
 
 }

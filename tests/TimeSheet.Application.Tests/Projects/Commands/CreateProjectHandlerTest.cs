@@ -72,6 +72,7 @@ public class CreateProjectHandlerTests
         context.VerifyProjectNotAdded();
     }
 
+    [Test]
      public async Task Handle_LeadNotFound()
     {
         context

@@ -44,8 +44,8 @@ public class UpdateTimeEntryHandler : IRequestHandler<UpdateTimeEntryCommand>
             request.Hours,
             request.Overtime,
             request.Description,
-            projectId: request.CategoryId,
-            categoryId: request.ProjectId);
+            categoryId: request.CategoryId,
+            projectId: request.ProjectId);
         
         
         await TimeEntryRepository.UpdateAsync(timeEntry);

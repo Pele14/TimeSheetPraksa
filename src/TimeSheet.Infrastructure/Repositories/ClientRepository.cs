@@ -46,6 +46,16 @@ public class ClientRepository : IClientRepository
         var client = await _context.Clients.FindAsync(id);
         if (client != null)
         {
+            var proects=await _context.Projects
+                .Where(p=>p.ClientId==id)
+                .ToListAsync();
+
+            var timeEntries=await _context.TimeEntries
+                .Where(te=>te.Project.ClientId==id)
+                .ToListAsync();    
+
+            _context.TimeEntries.RemoveRange(timeEntries);
+            _context.Projects.RemoveRange(proects);
             _context.Clients.Remove(client);
             await _context.SaveChangesAsync();
         }
@@ -58,10 +68,6 @@ public class ClientRepository : IClientRepository
         return await _context.Clients.AnyAsync(t => t.Name.ToLower() == normalized);
 
 
-    }
-    public async Task<bool> HasProjectAsync(Guid clientid)
-    {
-        return await _context.Projects.AnyAsync(p=>p.ClientId==clientid);    
     }
 
 }

@@ -32,25 +32,13 @@ public class DeleteClientHandlerTests
     [Test]
     public async Task Handle_ClientWithoutProjects()
     {
-        context.WithClientExisting().WithoutProjects();
+        context.WithClientExisting();
 
         await context.Handler.Handle(context.CreateCommand(), CancellationToken.None);
 
         context.RepositoryMock.Verify(r => r.DeleteAsync(context.ClientId), Times.Once);
     }
 
-
-    
-    [Test]
-    public async Task Handle_ClientWithProjects()
-    {
-        context.WithClientExisting().WithProjects();
-
-        Assert.ThrowsAsync<ConflictException>(()=>
-            context.Handler.Handle(context.CreateCommand(), CancellationToken.None));
-
-        context.RepositoryMock.Verify(r => r.DeleteAsync(context.ClientId), Times.Never);
-    }
 }
 
 public class DeleteClientTestContext
@@ -86,24 +74,6 @@ public class DeleteClientTestContext
         RepositoryMock
             .Setup(r => r.GetByIdAsync(ClientId))
             .ReturnsAsync((ClientModel?)null);
-
-        return this;
-    }
-
-    public DeleteClientTestContext WithProjects()
-    {
-        RepositoryMock
-            .Setup(r=>r.HasProjectAsync(ClientId))
-            .ReturnsAsync(true);
-
-        return this;
-    }
-
-     public DeleteClientTestContext WithoutProjects()
-    {
-        RepositoryMock
-            .Setup(r=>r.HasProjectAsync(ClientId))
-            .ReturnsAsync(false);
 
         return this;
     }
