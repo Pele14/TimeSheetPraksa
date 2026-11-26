@@ -15,16 +15,19 @@ public class UpdateTimeEntryHandler : IRequestHandler<UpdateTimeEntryCommand>
     private readonly ITimeEntryRepository TimeEntryRepository;
     private readonly IProjectRepository ProjectRepository;
     private readonly ICategoryRepository CategoryRepository;
+    private readonly ICurrentUserService CurrentUserService;
    
 
     public UpdateTimeEntryHandler(
         ITimeEntryRepository timeEntryRepository,
         IProjectRepository projectRepository,
-        ICategoryRepository categoryRepository)
+        ICategoryRepository categoryRepository,
+        ICurrentUserService currentUserService)
     {
         TimeEntryRepository = timeEntryRepository;
         ProjectRepository=projectRepository;
         CategoryRepository=categoryRepository;
+        CurrentUserService=currentUserService;
     }
 
 
@@ -33,6 +36,8 @@ public class UpdateTimeEntryHandler : IRequestHandler<UpdateTimeEntryCommand>
         var request = command.Request;
         var timeEntry=await TimeEntryRepository.GetByIdAsync(command.Id)
                     ?? throw new NotFoundException("Time entry not found");
+        if(timeEntry.TeamMemberId!= CurrentUserService.UserId)
+                throw new ForbiddenException("You can only modify your own entries");
         _=await ProjectRepository.GetByIdAsync(request.ProjectId)
                     ?? throw new NotFoundException("Project not found");
         _=await CategoryRepository.GetByIdAsync(request.CategoryId)

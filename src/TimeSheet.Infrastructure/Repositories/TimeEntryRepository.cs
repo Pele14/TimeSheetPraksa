@@ -45,4 +45,15 @@ public class TimeEntryRepository : ITimeEntryRepository
         else
             throw new KeyNotFoundException("Id doesnt exist");
     }
+
+    public async Task<List<TimeEntryModel>> GetByMemberAndDateRangeAsync(Guid teammemberId, DateOnly from, DateOnly to)
+    {
+        var entities=await _context.TimeEntries
+            .Where(te=>te.TeamMemberId==teammemberId && te.Date>=from && te.Date<=to)
+            .OrderBy(te=> te.Date)
+            .ThenBy(te=> te.CreatedAt)
+            .ToListAsync();
+        
+        return entities.Select(te=> te.MapToDomain()).ToList();
+    }
 }

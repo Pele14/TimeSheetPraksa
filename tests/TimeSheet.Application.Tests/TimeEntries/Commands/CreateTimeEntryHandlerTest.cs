@@ -123,13 +123,17 @@ public class CreateTimeEntryTestContext
     public Mock<ITeamMemberRepository> TeamMemberRepositoryMock { get; } = new();
     public Mock<ICategoryRepository> CategoryRepositoryMock { get; } = new();
     public Mock<IProjectRepository> ProjectRepositoryMock { get; } = new();
+    public Mock<ICurrentUserService> CurrentUserServiceMock{get; }=new();
     public CreateTimeEntryHandler Handler { get; }
 
     public CreateTimeEntryTestContext()
     {
+        CurrentUserServiceMock
+            .Setup(s=>s.UserId)
+            .Returns(memberId);
         Handler = new CreateTimeEntryHandler(TimeEntryRepositoryMock.Object,
         ProjectRepositoryMock.Object, ClientRepositoryMock.Object,
-        CategoryRepositoryMock.Object, TeamMemberRepositoryMock.Object);
+        CategoryRepositoryMock.Object, TeamMemberRepositoryMock.Object, CurrentUserServiceMock.Object);
     }
     public CreateTimeEntryCommand CreateValidCommand()
     {   
@@ -146,7 +150,6 @@ public class CreateTimeEntryTestContext
            Description="Description",
            ProjectId=projectId,
            CategoryId=categoryId,
-           TeamMemberId=memberId
         });
     }
 

@@ -17,30 +17,34 @@ public class CreateTimeEntryHandler : IRequestHandler<CreateTimeEntryCommand, Ti
     private readonly IClientRepository ClientRepository;
     private readonly ICategoryRepository CategoryRepository;
     private readonly ITeamMemberRepository TeamMemberRepository;
-
+    private readonly ICurrentUserService CurrentUserService;
     public CreateTimeEntryHandler(
         ITimeEntryRepository timeEntryRepository,
         IProjectRepository projectRepository,
         IClientRepository clientRepository,
         ICategoryRepository categoryRepository,
-        ITeamMemberRepository teamMemberRepository)
+        ITeamMemberRepository teamMemberRepository,
+        ICurrentUserService currentUserService)
     {
         TimeEntryRepository = timeEntryRepository;
         ProjectRepository=projectRepository;
         ClientRepository=clientRepository;
         CategoryRepository=categoryRepository;
         TeamMemberRepository=teamMemberRepository;
+        CurrentUserService=currentUserService;
+
     }
 
 
     public async Task<TimeEntryResponse> Handle(CreateTimeEntryCommand command, CancellationToken cancellationToken)
     {
+        var userId=CurrentUserService.UserId;
         var request = command.Request;
         var project=await ProjectRepository.GetByIdAsync(request.ProjectId)
                     ?? throw new NotFoundException("Project not found");
         var category=await CategoryRepository.GetByIdAsync(request.CategoryId)
                     ?? throw new NotFoundException("Category not found");
-        _=await TeamMemberRepository.GetByIdAsync(request.TeamMemberId)
+        _=await TeamMemberRepository.GetByIdAsync(userId)
                     ?? throw new NotFoundException("TeamMember not found");
         var client=await ClientRepository.GetByIdAsync(project.ClientId)
                     ?? throw new NotFoundException("Project not found");
@@ -55,7 +59,7 @@ public class CreateTimeEntryHandler : IRequestHandler<CreateTimeEntryCommand, Ti
             request.Description,
             category: request.CategoryId,
             project: request.ProjectId,
-            teammember: request.TeamMemberId);
+            teammember: userId);
         await TimeEntryRepository.AddAsync(timeEntry);
 
 

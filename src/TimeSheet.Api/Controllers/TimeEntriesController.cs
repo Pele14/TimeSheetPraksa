@@ -8,6 +8,8 @@ using TimeSheet.Application.TimeEntry.Commands.UpdateTimeEntry;
 using TimeSheet.Application.TimeEntry.Queries.GetTimeEntryById;
 using Timesheet.Infrastructure.DBEntities;
 using TimeSheet.Application.Responses.TimeEntryResponse;
+using TimeSheet.Application.TimeEntry.Queries.GetDayTimeEntries;
+using TimeSheet.Application.TimeEntry.Queries.GetMonthTimeEntries;
 
 namespace TimeSheet.Api.Controllers;
 
@@ -53,6 +55,17 @@ public class TimeEntriesController : ControllerBase
         await Mediator.Send(new UpdateTimeEntryCommand(id, request), cancellationToken);
         return NoContent();
 
+    }
+    [HttpGet("day")]
+    public async Task<ActionResult<DayTimeEntriesResponse>>GetDay([FromQuery]DateOnly date, CancellationToken cancellationToken)
+    {
+        return Ok(await Mediator.Send(new GetDayTimeEntriesQuery(date), cancellationToken));
+    }
+
+    [HttpGet("month")]
+    public async Task<ActionResult<MonthTimeEntriesResponse>>GetMonth([FromQuery]GetMonthTimeEntriesRequest request, CancellationToken cancellationToken)
+    {
+        return Ok(await Mediator.Send(new GetMonthTimeEntriesQuery(request), cancellationToken));
     }
 
 }

@@ -3,9 +3,10 @@ using Timesheet.Domain.Entities;
 using TimeSheet.Application.Common.Exceptions;
 using TimeSheet.Application.TimeEntry.Queries.GetTimeEntryById;
 using TimeSheet.Core.Repositories;
+using TimeSheet.Core.Security;
 using TimeSheet.Domain.Enums;
 
-namespace TimeSheet.Application.Tests.TimeEntrys.Queries;
+namespace TimeSheet.Application.Tests.TimeEntries.Queries;
 
 [TestFixture]
 public class GetTimeEntryHandlerTests
@@ -65,6 +66,16 @@ public class GetTimeEntryHandlerTests
     }
 
     [Test]
+    public void Handle_NotOwner()
+    {
+        context.WithTimeEntryExisting()
+               .WithDifferentUser();
+
+        Assert.ThrowsAsync<ForbiddenException>(() =>
+            context.Handler.Handle(context.GetQuery(), CancellationToken.None));
+    }
+
+    [Test]
     public async Task Handle_MissingProject()
     {
         context.WithTimeEntryExisting()
@@ -102,11 +113,13 @@ public class GetTimeEntryTestContext
     public Mock<IClientRepository> ClientRepositoryMock { get; } = new();
     public Mock<ICategoryRepository> CategoryRepositoryMock { get; } = new();
     public Mock<IProjectRepository> ProjectRepositoryMock { get; } = new();
+    public Mock<ICurrentUserService> CurrentUserServiceMock{get; }= new();
     public GetTimeEntryByIdHandler Handler { get; }
 
     public GetTimeEntryTestContext()
-    {
-        Handler = new GetTimeEntryByIdHandler(TimeEntryRepositoryMock.Object, ProjectRepositoryMock.Object, ClientRepositoryMock.Object, CategoryRepositoryMock.Object);
+    {   
+        CurrentUserServiceMock.Setup(s=> s.UserId).Returns(memberId);
+        Handler = new GetTimeEntryByIdHandler(TimeEntryRepositoryMock.Object, ProjectRepositoryMock.Object, ClientRepositoryMock.Object, CategoryRepositoryMock.Object, CurrentUserServiceMock.Object);
 
     }
 
@@ -171,8 +184,14 @@ public class GetTimeEntryTestContext
             .ReturnsAsync((ProjectModel?)null);
         return this;
     }
-
-    
+    public GetTimeEntryTestContext WithDifferentUser()
+    {
+        CurrentUserServiceMock
+            .Setup(s => s.UserId)
+            .Returns(Guid.NewGuid());
+        return this;
+    }
+ 
     public GetTimeEntryTestContext WithCategoryExisting()
     {
         CategoryRepositoryMock

@@ -2,6 +2,7 @@ using MediatR;
 using TimeSheet.Application.Common.Exceptions;
 using TimeSheet.Application.Responses.TimeEntryResponse;
 using TimeSheet.Core.Repositories;
+using TimeSheet.Core.Security;
 
 namespace TimeSheet.Application.TimeEntry.Queries.GetTimeEntryById;
 
@@ -12,16 +13,19 @@ public class GetTimeEntryByIdHandler : IRequestHandler<GetTimeEntryByIdQuery, Ti
     private readonly IProjectRepository ProjectRepository;
     private readonly IClientRepository ClientRepository;
     private readonly ICategoryRepository CategoryRepository;
+    private readonly ICurrentUserService CurrentUserService;
     public GetTimeEntryByIdHandler(
         ITimeEntryRepository timeEntryRepository,
         IProjectRepository projectRepository,
         IClientRepository clientRepository,
-        ICategoryRepository categoryRepository)
+        ICategoryRepository categoryRepository,
+        ICurrentUserService currentUserService)
     {
         TimeEntryRepository = timeEntryRepository;
         ProjectRepository=projectRepository;
         ClientRepository=clientRepository;
         CategoryRepository=categoryRepository;
+        CurrentUserService=currentUserService;
 
     }
 
@@ -31,6 +35,8 @@ public class GetTimeEntryByIdHandler : IRequestHandler<GetTimeEntryByIdQuery, Ti
     {
         var timeEntry=await TimeEntryRepository.GetByIdAsync(request.id)
                     ?? throw new NotFoundException("Time entry not found");
+        if(timeEntry.TeamMemberId!=CurrentUserService.UserId)
+                    throw new ForbiddenException("You can only view you own time entities");
         var project=await ProjectRepository.GetByIdAsync(timeEntry.ProjectId)
                     ?? throw new NotFoundException("Project not found");
         var category=await CategoryRepository.GetByIdAsync(timeEntry.CategoryId)

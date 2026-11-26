@@ -29,11 +29,11 @@ public static class TestData
     {
         return new Category{Id=Guid.NewGuid(), Name= name};
     }
-    public static TimeEntryModel CreateTimeEntry(Guid projectId, Guid categoryId, Guid teamMemberId)
+    public static TimeEntryModel CreateTimeEntry(Guid projectId, Guid categoryId, Guid teamMemberId, DateOnly? date=null)
     {
         return new TimeEntryModel(
             Guid.NewGuid(),
-            new DateOnly(2026, 11, 25),
+            date ?? new DateOnly(2026, 11, 25),
             7.5,
             0.5,
             "Description",

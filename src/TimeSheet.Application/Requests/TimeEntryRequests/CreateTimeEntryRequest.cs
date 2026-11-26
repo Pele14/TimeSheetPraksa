@@ -10,5 +10,4 @@ public class CreateTimeEntryRequest
     public string? Description{get; set;}
     public required Guid ProjectId{get; set;}
     public required Guid CategoryId{get; set;}
-    public required Guid TeamMemberId{get; set;}
 }

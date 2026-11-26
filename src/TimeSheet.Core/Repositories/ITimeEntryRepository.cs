@@ -9,5 +9,6 @@ public interface ITimeEntryRepository
     Task AddAsync(TimeEntryModel timeEntry);
     Task UpdateAsync(TimeEntryModel timeEntry);
     Task DeleteAsync(Guid id);
+    Task<List<TimeEntryModel>> GetByMemberAndDateRangeAsync(Guid teammemberId, DateOnly from, DateOnly to);
 
 }

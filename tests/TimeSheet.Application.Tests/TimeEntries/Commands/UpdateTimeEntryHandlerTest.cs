@@ -59,6 +59,20 @@ public class UpdateTimeEntryHandlerTests
         
         context.VerifyTimeEntryNotUpdated();
     }
+
+      [Test]
+    public void Handle_NotOwner()
+    {
+        context.WithTimeEntryExisting()
+               .WithProjectExisting()
+               .WithCategoryExisting()
+               .WithDifferentUser();
+
+        Assert.ThrowsAsync<ForbiddenException>(() =>
+            context.Handler.Handle(context.UpdateValidCommand(), CancellationToken.None));
+
+        context.VerifyTimeEntryNotUpdated();
+    }
    
     [Test]
     public async Task Handle_ProjectNotFound()
@@ -117,17 +131,20 @@ public class UpdateTimeEntryTestContext
     public Mock<ITimeEntryRepository> TimeEntryRepositoryMock { get; } = new();
     public Mock<ICategoryRepository> CategoryRepositoryMock { get; } = new();
     public Mock<IProjectRepository> ProjectRepositoryMock { get; } = new();
+    public Mock<ICurrentUserService> CurrentUserServiceMock{get;}=new();
     public UpdateTimeEntryHandler Handler { get; }
     public TimeEntryModel? UpdatedTimeEntry { get; private set;}
     public UpdateTimeEntryTestContext()
     {
+        CurrentUserServiceMock.Setup(s=> s.UserId).Returns(memberId);
         TimeEntryRepositoryMock
             .Setup(r=>r.UpdateAsync(It.IsAny<TimeEntryModel>()))
             .Callback<TimeEntryModel>(te=>UpdatedTimeEntry=te);
 
         Handler = new UpdateTimeEntryHandler(TimeEntryRepositoryMock.Object,
         ProjectRepositoryMock.Object,
-        CategoryRepositoryMock.Object);
+        CategoryRepositoryMock.Object,
+        CurrentUserServiceMock.Object);
     }
     public UpdateTimeEntryCommand UpdateValidCommand()
     {   
@@ -167,6 +184,8 @@ public class UpdateTimeEntryTestContext
         return this;
     }
 
+    
+
     public UpdateTimeEntryTestContext WithProjectExisting()
     {
         ProjectRepositoryMock
@@ -174,14 +193,20 @@ public class UpdateTimeEntryTestContext
             .ReturnsAsync(new ProjectModel(newProjectId, "ProjectName", "Descripion", ProjectStatus.Active, clinetId, memberId));
         return this;
     }
-     public UpdateTimeEntryTestContext WithProjectNotFound()
+    public UpdateTimeEntryTestContext WithProjectNotFound()
     {
         ProjectRepositoryMock
             .Setup(r=> r.GetByIdAsync(newProjectId))
             .ReturnsAsync((ProjectModel?)null);
         return this;
     }
-
+    public UpdateTimeEntryTestContext WithDifferentUser()
+    {
+        CurrentUserServiceMock
+            .Setup(s => s.UserId)
+            .Returns(Guid.NewGuid());
+        return this;
+    }
     
     public UpdateTimeEntryTestContext WithCategoryExisting()
     {
@@ -190,7 +215,7 @@ public class UpdateTimeEntryTestContext
             .ReturnsAsync(new CategoryModel(newCategoryId, "Design"));
         return this;
     }
-     public UpdateTimeEntryTestContext WithCategoryNotFound()
+    public UpdateTimeEntryTestContext WithCategoryNotFound()
     {
         CategoryRepositoryMock
             .Setup(r=> r.GetByIdAsync(newCategoryId))

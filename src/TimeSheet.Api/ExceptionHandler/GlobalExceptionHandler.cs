@@ -22,6 +22,7 @@ public class GlobalExceptionHandler : IExceptionHandler
     {
         var (statusCode, title) = exception switch
         {
+            ForbiddenException=>(StatusCodes.Status403Forbidden,"Forbidden"),
             NotFoundException => (StatusCodes.Status404NotFound, "Resource not found"),
             ConflictException => (StatusCodes.Status409Conflict, "Conflict"),
             UnauthorizedException => (StatusCodes.Status401Unauthorized, "Unauthorized"),

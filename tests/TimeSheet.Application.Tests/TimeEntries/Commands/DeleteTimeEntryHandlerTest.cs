@@ -32,12 +32,23 @@ public class DeleteTimeEntryHandlerTests
         context.WithTimeEntryExisting();
         await context.Handler.Handle(context.DeleteValidCommand(), CancellationToken.None);
 
-        context.TimeEntryRepositoryMock.Verify(r=>r.DeleteAsync(context.timeEntryId));
+        context.TimeEntryRepositoryMock.Verify(r=>r.DeleteAsync(context.timeEntryId), Times.Once);
 
     }
 
     [Test]
+    public void Handle_NotOwner()
+    {
+        context.WithTimeEntryExisting()
+               .WithDifferentUser();
 
+        Assert.ThrowsAsync<ForbiddenException>(() =>
+            context.Handler.Handle(context.DeleteValidCommand(), CancellationToken.None));
+
+        context.VerifyTimeEntryNotDeleted();
+    }
+
+    [Test]
     public async Task Handle_TimeEntryNotFound()
     {
         context.WithTimeEntryNotFound();
@@ -52,12 +63,17 @@ public class DeleteTimeEntryHandlerTests
 }
 public class DeleteTimeEntryTestContext
 {   
+    public Guid memberId{get; }=Guid.NewGuid();
     public Guid timeEntryId{get; }=Guid.NewGuid();
     public Mock<ITimeEntryRepository> TimeEntryRepositoryMock { get; } = new();
+    public Mock<ICurrentUserService> CurrentUserServiceMock {get; }= new();
     public DeleteTimeEntryHandler Handler{get; }
     public DeleteTimeEntryTestContext()
     {
-        Handler = new DeleteTimeEntryHandler(TimeEntryRepositoryMock.Object);
+        CurrentUserServiceMock
+                .Setup(s=> s.UserId)
+                .Returns(memberId);
+        Handler = new DeleteTimeEntryHandler(TimeEntryRepositoryMock.Object, CurrentUserServiceMock.Object);
     }
     public DeleteTimeEntryCommand DeleteValidCommand()
     {   
@@ -73,8 +89,16 @@ public class DeleteTimeEntryTestContext
              7.5, 0.5, "Opis",
              project: Guid.NewGuid(),
              category: Guid.NewGuid(),
-             teammember: Guid.NewGuid()));
+             teammember: memberId));
 
+        return this;
+    }
+
+    public DeleteTimeEntryTestContext WithDifferentUser()
+    {
+        CurrentUserServiceMock
+            .Setup(s => s.UserId)
+            .Returns(Guid.NewGuid());
         return this;
     }
 
