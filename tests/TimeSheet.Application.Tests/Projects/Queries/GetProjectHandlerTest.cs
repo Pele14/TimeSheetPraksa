@@ -85,7 +85,7 @@ public class GetProjectTestContext
     public GetProjectTestContext WithProjectExisting()
     {
         ProjectRepositoryMock
-            .Setup(r => r.GetByIdAsync(ProjectId))
+            .Setup(r => r.GetByIdAsync(ProjectId, true))
             .ReturnsAsync(Project);
 
         return this;
@@ -94,7 +94,7 @@ public class GetProjectTestContext
     public GetProjectTestContext WithProjectNotFound()
     {
         ProjectRepositoryMock
-            .Setup(r => r.GetByIdAsync(ProjectId))
+            .Setup(r => r.GetByIdAsync(ProjectId, true))
             .ReturnsAsync((ProjectModel?)null);
 
         return this;

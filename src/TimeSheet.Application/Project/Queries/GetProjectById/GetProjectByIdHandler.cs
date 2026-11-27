@@ -24,7 +24,7 @@ public class GetProjectByIdHandler : IRequestHandler<GetProjectByIdQuery, Projec
     {
         var Id = request.Id;
 
-        var entity = await ProjectRepository.GetByIdAsync(Id) ??
+        var entity = await ProjectRepository.GetByIdAsync(Id, includeInactive: true) ??
             throw new NotFoundException("Project doesnt exist");
         var client= await ClientRepository.GetByIdAsync(entity.ClientId);
 

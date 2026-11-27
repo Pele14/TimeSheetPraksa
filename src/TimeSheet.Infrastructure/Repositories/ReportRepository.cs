@@ -2,6 +2,7 @@ using System.Net.Quic;
 using Microsoft.EntityFrameworkCore;
 using TimeSheet.Core.Reports;
 using TimeSheet.Core.Repositories;
+using TimeSheet.Infrastructure.Configurations;
 using TimeSheet.Infrastructure.Persistence;
 
 namespace TimeSheet.Infrastructure.Repositories;
@@ -20,7 +21,7 @@ public class ReportRepository : IReportRepository
     {
         var query=
             from te in _context.TimeEntries
-            join p in _context.Projects on te.ProjectId equals p.Id
+            join p in _context.Projects.IgnoreQueryFilters([ProjectFilters.ActiveOnly]) on te.ProjectId equals p.Id
             join c in _context.Clients on p.ClientId equals c.Id
             join cat in _context.Categories on te.CategoryId equals cat.Id
             join tm in _context.TeamMembers on te.TeamMemberId equals tm.Id

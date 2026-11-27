@@ -5,7 +5,7 @@ using TimeSheet.Application.Common.Exceptions;
 using TimeSheet.Application.Requests.AuthRequests;
 using TimeSheet.Application.Responses.AuthResponses;
 
-namespace TimeSheet.Api.Controllers;
+namespace TimeSheet.Auth.Api.Controllers;
 
 
 [ApiController]

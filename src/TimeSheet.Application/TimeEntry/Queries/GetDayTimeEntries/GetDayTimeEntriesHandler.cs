@@ -33,7 +33,7 @@ public class GetDayTimeEntriesHandler: IRequestHandler<GetDayTimeEntriesQuery, D
     public async Task<DayTimeEntriesResponse> Handle(GetDayTimeEntriesQuery request, CancellationToken cancellationToken)
     {
         var entries=await TimeEntryRepository.GetByMemberAndDateRangeAsync(CurrentUserService.UserId, request.Date, request.Date);
-        var projects=(await ProjectRepository.GetAllAsync()).ToDictionary(p=>p.Id);
+        var projects=(await ProjectRepository.GetAllAsync(includeInactive: true)).ToDictionary(p=>p.Id);
         var clients=(await ClientRepository.GetAllAsync()).ToDictionary(c=>c.Id);
         var categories=(await CategoryRepository.GetAllAsync()).ToDictionary(c=> c.Id);
 

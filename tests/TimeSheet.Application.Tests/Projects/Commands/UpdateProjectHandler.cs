@@ -118,7 +118,7 @@ public class UpdateProjectHandlerTests
             .WithLeadNotFound();
 
         Assert.ThrowsAsync<NotFoundException>(() =>
-            context.Handler.Handle(context.UpdateValidCommand(UpdateClientTestContext.NewName),CancellationToken.None));    
+            context.Handler.Handle(context.UpdateValidCommand(UpdateProjectTestContext.NewName),CancellationToken.None));    
         
         context.VerifyProjectNotUpdated();
     }
@@ -157,7 +157,7 @@ public class UpdateProjectTestContext
     public UpdateProjectTestContext WithProjectExisting()
     {
         ProjectRepositoryMock
-            .Setup(r=>r.GetByIdAsync(ProjectId))
+            .Setup(r=>r.GetByIdAsync(ProjectId, true))
             .ReturnsAsync(new ProjectModel(
                 ProjectId, ExistingName, "stari opis", ProjectStatus.Active,
                 Guid.NewGuid(), Guid.NewGuid()
@@ -168,7 +168,7 @@ public class UpdateProjectTestContext
     public UpdateProjectTestContext WithProjectNotFound()
     {
         ProjectRepositoryMock
-            .Setup(r=>r.GetByIdAsync(ProjectId))
+            .Setup(r=>r.GetByIdAsync(ProjectId, true))
             .ReturnsAsync((ProjectModel?)null);
         return this;
     }

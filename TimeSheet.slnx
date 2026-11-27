@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Auth/">
+    <Project Path="src/TimeSheet.Auth.Api/TimeSheet.Auth.Api.csproj" />
+  </Folder>
   <Folder Name="/src/">
     <Project Path="src/TimeSheet.Api/TimeSheet.Api.csproj" />
     <Project Path="src/TimeSheet.Core/TimeSheet.Core.csproj" />

@@ -55,6 +55,18 @@ public class GetAllProjectsHandlerTests
 
         Assert.That(result.Projects.All(p => p.ClientName==string.Empty), Is.True);
     }
+    [Test]
+    public async Task Handle_IncludeInactive()
+    {
+        context.WithProjects()
+                .WithClients();
+
+        await context.Handler.Handle(context.CreateQuery(includeInacive: true), CancellationToken.None);
+
+        context.ProjectRepositoryMock.Verify(r=> r.GetAllAsync(true), Times.Once);
+
+
+    }
 }
 
 public class GetAllProjectTestContext
@@ -78,7 +90,7 @@ public class GetAllProjectTestContext
     public GetAllProjectTestContext WithProjects()
     {
         ProjectRepositoryMock
-            .Setup(r => r.GetAllAsync())
+            .Setup(r => r.GetAllAsync(It.IsAny<bool>()))
             .ReturnsAsync(new List<ProjectModel>
             {
                 new(Guid.NewGuid(), "VegaIT", "description 1", ProjectStatus.Active, id1, Guid.NewGuid()),
@@ -92,10 +104,14 @@ public class GetAllProjectTestContext
     public GetAllProjectTestContext WithNoProjects()
     {
         ProjectRepositoryMock
-            .Setup(r => r.GetAllAsync())
+            .Setup(r => r.GetAllAsync(It.IsAny<bool>()))
             .ReturnsAsync(new List<ProjectModel>());
 
         return this;
+    }
+    public GetProjectsQuery CreateQuery(bool includeInacive)
+    {
+        return new GetProjectsQuery(includeInacive);
     }
 
      public GetAllProjectTestContext WithClients()

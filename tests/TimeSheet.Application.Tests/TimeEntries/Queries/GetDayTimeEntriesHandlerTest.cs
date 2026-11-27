@@ -114,7 +114,7 @@ public class GetDayTimeEntriesTestContext
     public GetDayTimeEntriesTestContext WithLookups()
     {
         ProjectRepositoryMock
-            .Setup(r=> r.GetAllAsync())
+            .Setup(r=> r.GetAllAsync(true))
             .ReturnsAsync(new List<ProjectModel>
             {
                 new(projectId, ProjectName, "Description", ProjectStatus.Active, clientId, memberId)

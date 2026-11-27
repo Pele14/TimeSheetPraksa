@@ -25,9 +25,9 @@ public class ProjectController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<ProjectResponse>> GetAll(CancellationToken cancellationToken)
+    public async Task<ActionResult<ProjectResponse>> GetAll([FromQuery]bool includeInactive, CancellationToken cancellationToken)
     {
-        return Ok(await Mediator.Send(new GetProjectsQuery(), cancellationToken));
+        return Ok(await Mediator.Send(new GetProjectsQuery(includeInactive), cancellationToken));
     }
 
     [HttpGet("{id:guid}")]

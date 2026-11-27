@@ -19,7 +19,7 @@ public class GetProjectsHandler : IRequestHandler<GetProjectsQuery, ProjectsResp
     }
     public async Task<ProjectsResponse> Handle(GetProjectsQuery request, CancellationToken cancellationToken)
     {
-        var projects = await ProjectRepository.GetAllAsync();
+        var projects = await ProjectRepository.GetAllAsync(request.includeInactive);
         var clients= await ClientRepository.GetAllAsync();
         var clientName=clients.ToDictionary(c=>c.Id, c=>c.Name);
         return new ProjectsResponse

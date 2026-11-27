@@ -35,7 +35,6 @@ public class UpdateTimeEntryHandlerTests
                .WithTimeEntryExisting();
         
         await context.Handler.Handle(context.UpdateValidCommand(), CancellationToken.None);
-        await context.Handler.Handle(context.UpdateValidCommand(), CancellationToken.None);
 
         var updated = context.UpdatedTimeEntry;
         Assert.That(updated, Is.Not.Null);
@@ -119,7 +118,7 @@ public class UpdateTimeEntryHandlerTests
 public class UpdateTimeEntryTestContext
 {   
     public const string NewDescription="Izmenjeno";
-    public const double Hours=7.5;
+    public const double Hours=6;
     public Guid timeEntryId{get; }=Guid.NewGuid();
     public Guid oldCategoryId{get; }=Guid.NewGuid();
     public Guid oldProjectId{get; }=Guid.NewGuid();
@@ -189,14 +188,14 @@ public class UpdateTimeEntryTestContext
     public UpdateTimeEntryTestContext WithProjectExisting()
     {
         ProjectRepositoryMock
-            .Setup(r=> r.GetByIdAsync(newProjectId))
+            .Setup(r=> r.GetByIdAsync(newProjectId, false))
             .ReturnsAsync(new ProjectModel(newProjectId, "ProjectName", "Descripion", ProjectStatus.Active, clinetId, memberId));
         return this;
     }
     public UpdateTimeEntryTestContext WithProjectNotFound()
     {
         ProjectRepositoryMock
-            .Setup(r=> r.GetByIdAsync(newProjectId))
+            .Setup(r=> r.GetByIdAsync(newProjectId, false))
             .ReturnsAsync((ProjectModel?)null);
         return this;
     }

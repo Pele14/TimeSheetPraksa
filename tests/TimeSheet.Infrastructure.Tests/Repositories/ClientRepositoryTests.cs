@@ -101,12 +101,14 @@ public class ClientRepositoryTests
             Assert.That(result, Is.Null);
         }
     }
-    [Test]
-     public async Task DeleteClientAndProjectAndTimeEntries()
+
+    [TestCase(ProjectStatus.Active)]
+    [TestCase(ProjectStatus.Inactive)]
+     public async Task DeleteClientAndProjectAndTimeEntries(ProjectStatus status)
     {
         var client=await AddClientAsync();
         var lead=TestData.CreateMember();
-        var project=TestData.CreateProject(client.Id, lead.Id);
+        var project=TestData.CreateProject(client.Id, lead.Id, status: status);
         var category= TestData.CreateCategory();
         var entry=TestData.CreateTimeEntry(project.Id, category.Id, lead.Id);
 
@@ -171,6 +173,7 @@ public class ClientRepositoryTests
             repository.AddAsync(TestData.CreateClient(name: "VegaIT")));
 
     }
+
 
 
 

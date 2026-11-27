@@ -69,6 +69,17 @@ public class LoginServiceTests
         Assert.That(result.Token, Is.EqualTo(LoginServiceTestContext.Token));
         context.RepositoryMock.Verify(r => r.GetByEmailAsync(LoginServiceTestContext.Email), Times.Once);
     }
+    [Test]
+    public void LoginAsync_InactiveMember()
+    {
+        context.WithInactiveMember();
+
+        Assert.ThrowsAsync<ForbiddenException>(()=>
+            context.AuthService.LoginAsync(context.CreateLoginRequest()));
+        
+        context.VerifyTokenNotGenerated();
+
+    }
 }
 
 public class LoginServiceTestContext
@@ -136,6 +147,20 @@ public class LoginServiceTestContext
             .Returns(true);
 
         return this;
+    }
+    public LoginServiceTestContext WithInactiveMember()
+    {
+        RepositoryMock
+            .Setup(r=> r.GetByEmailAsync(Email))
+            .ReturnsAsync(new TeamMemberModel(Guid.NewGuid(), "Aleksa", "aleksa", Email, PasswordHash, 40, Role.User, MemberStatus.Inactive));
+
+        PasswordHasherMock
+            .Setup(h=> h.Verify(Password, PasswordHash))
+            .Returns(true);
+
+        return this;
+
+
     }
 
     public LoginServiceTestContext WithWrongPassword()

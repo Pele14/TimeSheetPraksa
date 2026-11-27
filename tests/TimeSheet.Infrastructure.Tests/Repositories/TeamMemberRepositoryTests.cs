@@ -1,6 +1,8 @@
 
 
+using System.Transactions;
 using Microsoft.EntityFrameworkCore;
+using NUnit.Framework.Internal;
 using SQLitePCL;
 using Timesheet.Domain.Entities;
 using TimeSheet.Infrastructure.Repositories;
@@ -105,6 +107,51 @@ public class TeamMemberRepositoryTests
             var result=await new TeamMemberRepository(context).GetByIdAsync(member.Id);
             Assert.That(result, Is.Null);
         }
+    }
+    
+    [Test]
+    public async Task DeleteAsync_DeletesOwnEntries()
+    {
+        var lead=await AddMemberAsync("aleksa.pele03@gmail.com", "aleksa");
+        var other=await AddMemberAsync("nikola@gmail.com", "nikola");
+        var client=TestData.CreateClient();
+        var project=TestData.CreateProject(client.Id, lead.Id);
+        var category=TestData.CreateCategory();
+        var leadEntry=TestData.CreateTimeEntry(project.Id, category.Id, lead.Id);
+        var otherEntry=TestData.CreateTimeEntry(project.Id, category.Id, other.Id);
+
+
+        using(var context= database.CreateContext())
+        {
+            await new ClientRepository(context).AddAsync(client);
+            await new ProjectRepository(context).AddAsync(project);
+            context.Categories.Add(category);
+            await context.SaveChangesAsync();
+
+            var entries=new TimeEntryRepository(context);
+            await entries.AddAsync(leadEntry);
+            await entries.AddAsync(otherEntry);
+        }
+        using(var context = database.CreateContext())
+        {
+            await new TeamMemberRepository(context).DeleteAsync(lead.Id);
+        }
+        using(var context = database.CreateContext())
+        {
+            var leadEntryRow=await context.TimeEntries.IgnoreQueryFilters().AsNoTracking()
+                .SingleAsync(te=> te.Id==leadEntry.Id);
+            var otherEntryRow=await context.TimeEntries.IgnoreQueryFilters().AsNoTracking()
+                .SingleAsync(te=> te.Id==otherEntry.Id);
+            var projectRow=await context.Projects.IgnoreQueryFilters().AsNoTracking()
+                .SingleAsync(p=> p.Id==project.Id);
+
+        Assert.That(leadEntryRow.IsDeleted, Is.True);
+        Assert.That(otherEntryRow.IsDeleted, Is.False);
+        Assert.That(projectRow.IsDeleted, Is.False);
+
+        }
+
+
     }
 
     [Test]

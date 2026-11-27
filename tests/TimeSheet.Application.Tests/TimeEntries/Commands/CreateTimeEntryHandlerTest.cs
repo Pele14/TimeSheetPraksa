@@ -192,14 +192,14 @@ public class CreateTimeEntryTestContext
     public CreateTimeEntryTestContext WithProjectExisting()
     {
         ProjectRepositoryMock
-            .Setup(r=> r.GetByIdAsync(projectId))
+            .Setup(r=> r.GetByIdAsync(projectId, false))
             .ReturnsAsync(new ProjectModel(projectId, ProjectName, "Descripion", ProjectStatus.Active, clinetId, memberId));
         return this;
     }
      public CreateTimeEntryTestContext WithProjectNotFound()
     {
         ProjectRepositoryMock
-            .Setup(r=> r.GetByIdAsync(projectId))
+            .Setup(r=> r.GetByIdAsync(projectId, false))
             .ReturnsAsync((ProjectModel?)null);
         return this;
     }

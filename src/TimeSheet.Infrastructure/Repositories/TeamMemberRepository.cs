@@ -48,6 +48,10 @@ public class TeamMemberRepository : ITeamMemberRepository
         var teamMember = await _context.TeamMembers.FindAsync(id);
         if (teamMember != null)
         {
+            var timeEntries=await _context.TimeEntries
+                .Where(te=>te. TeamMemberId==id)
+                .ToListAsync();
+            _context.TimeEntries.RemoveRange(timeEntries);
             _context.TeamMembers.Remove(teamMember);
             await _context.SaveChangesAsync();
         }

@@ -63,7 +63,7 @@ public class DeleteProjectTestContext
     public DeleteProjectTestContext WithProjectExisting()
     {
         ProjectRepositoryMock
-            .Setup(r => r.GetByIdAsync(ProjectId))
+            .Setup(r => r.GetByIdAsync(ProjectId, true))
             .ReturnsAsync(new ProjectModel(
                 ProjectId, "VegaIT", "Description", ProjectStatus.Active,
                 Guid.NewGuid(), Guid.NewGuid()));
@@ -74,7 +74,7 @@ public class DeleteProjectTestContext
     public DeleteProjectTestContext WithProjectNotFound()
     {
         ProjectRepositoryMock
-            .Setup(r => r.GetByIdAsync(ProjectId))
+            .Setup(r => r.GetByIdAsync(ProjectId, true))
             .ReturnsAsync((ProjectModel?)null);
 
         return this;

@@ -24,8 +24,8 @@ public class ReportRepositoryTests
     {
         database=new TestDatabase();
 
-        aleksa=TestData.CreateMember("aleksa.pele03@gmail.com", "aleksa");
-        nikola=TestData.CreateMember("nikola@gmail.com", "nikola");
+        aleksa=TestData.CreateMember("aleksa.pele03@gmail.com", "aleksa", name: "Aleksa");
+        nikola=TestData.CreateMember("nikola@gmail.com", "nikola", name: "Nikola");
         vegaIT=TestData.CreateClient("VegaIT");
         continental=TestData.CreateClient("Continental");
         pr1=TestData.CreateProject(vegaIT.Id, aleksa.Id, "Projekat1");

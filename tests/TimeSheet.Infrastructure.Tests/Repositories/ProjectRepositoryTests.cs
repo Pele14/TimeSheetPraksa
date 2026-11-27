@@ -1,6 +1,7 @@
 
 
 using Microsoft.EntityFrameworkCore;
+using NUnit.Framework.Constraints;
 using SQLitePCL;
 using Timesheet.Domain.Entities;
 using TimeSheet.Domain.Enums;
@@ -68,7 +69,7 @@ public class ProjectRepositoryTests
         }
         using(var context= database.CreateContext())
         {
-            var result=await new ProjectRepository(context).GetByIdAsync(Project.Id);
+            var result=await new ProjectRepository(context).GetByIdAsync(Project.Id, includeInactive: true);
 
             Assert.That(result!.Name, Is.EqualTo("Novi naziv"));
             Assert.That(result.Description, Is.EqualTo("Novi opis"));
@@ -188,7 +189,66 @@ public class ProjectRepositoryTests
 
     }
 
+    [Test]
+    public async Task GetbyId_InactiveProject()
+    {
+        var(client, lead)=await AddParentsAsync();
+        var project=TestData.CreateProject(client.Id, lead.Id, status: ProjectStatus.Inactive);
 
+        using(var context = database.CreateContext())
+        {
+            await new ProjectRepository(context).AddAsync(project);
+
+        }
+        using(var context = database.CreateContext())
+        {
+            var repository=new ProjectRepository(context);
+            Assert.That(await repository.GetByIdAsync(project.Id), Is.Null);
+            Assert.That(await repository.GetByIdAsync(project.Id, includeInactive: true), Is.Not.Null);
+
+        }
+    }
+
+    [Test]
+    public async Task GetAllAsync_InactiveProject()
+    {
+        var(client, lead)=await AddParentsAsync();
+        await AddProjectAsync(client.Id, lead.Id, "Aktivan");
+
+        using(var context = database.CreateContext())
+        {
+            await new ProjectRepository(context).AddAsync(
+                TestData.CreateProject(client.Id, lead.Id, "Neaktivan", ProjectStatus.Inactive));
+            
+        }
+        using(var context = database.CreateContext())
+        {
+            var repository=new ProjectRepository(context);
+            var active=await repository.GetAllAsync();
+            var all=await repository.GetAllAsync(includeInactive: true);
+
+            Assert.That(active.Select(p=> p.Name), Is.EqualTo(new[]{"Aktivan"}));
+            Assert.That(all.Select(p=> p.Name), Is.EqualTo(new[]{"Aktivan", "Neaktivan"}));
+        }
+    }
+
+    [Test]
+    public async Task ExistsByNameAsync_InactiveProject()
+    {
+        var(client, lead)=await AddParentsAsync();
+
+        using(var context= database.CreateContext())
+        {
+            await new ProjectRepository(context).AddAsync(
+                    TestData.CreateProject(client.Id, lead.Id, "Arhiva", ProjectStatus.Inactive));
+        }
+        using(var context= database.CreateContext())
+        {
+            Assert.That(await new ProjectRepository(context).ExistsByNameAsync("arhiva"));
+        }
+
+
+    }
 
 
     private async Task<ProjectModel> AddProjectAsync(Guid clientid, Guid leadid, string name="VegaIT")

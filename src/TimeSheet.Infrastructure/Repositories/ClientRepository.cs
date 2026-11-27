@@ -3,6 +3,7 @@ using TimeSheet.Core.Repositories;
 using Timesheet.Domain.Entities;
 using TimeSheet.Infrastructure.Mappers;
 using Microsoft.EntityFrameworkCore;
+using TimeSheet.Infrastructure.Configurations;
 namespace TimeSheet.Infrastructure.Repositories;
 
 public class ClientRepository : IClientRepository
@@ -47,10 +48,12 @@ public class ClientRepository : IClientRepository
         if (client != null)
         {
             var proects=await _context.Projects
+                .IgnoreQueryFilters([ProjectFilters.ActiveOnly])
                 .Where(p=>p.ClientId==id)
                 .ToListAsync();
 
             var timeEntries=await _context.TimeEntries
+                .IgnoreQueryFilters([ProjectFilters.ActiveOnly])
                 .Where(te=>te.Project.ClientId==id)
                 .ToListAsync();    
 

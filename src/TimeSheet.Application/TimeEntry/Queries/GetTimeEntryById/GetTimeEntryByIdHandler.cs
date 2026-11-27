@@ -37,7 +37,7 @@ public class GetTimeEntryByIdHandler : IRequestHandler<GetTimeEntryByIdQuery, Ti
                     ?? throw new NotFoundException("Time entry not found");
         if(timeEntry.TeamMemberId!=CurrentUserService.UserId)
                     throw new ForbiddenException("You can only view you own time entities");
-        var project=await ProjectRepository.GetByIdAsync(timeEntry.ProjectId)
+        var project=await ProjectRepository.GetByIdAsync(timeEntry.ProjectId, includeInactive: true)
                     ?? throw new NotFoundException("Project not found");
         var category=await CategoryRepository.GetByIdAsync(timeEntry.CategoryId)
                     ?? throw new NotFoundException("Category not found");

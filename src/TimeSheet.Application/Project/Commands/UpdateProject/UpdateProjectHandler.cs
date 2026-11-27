@@ -21,7 +21,7 @@ public class UpdateProjectHandler : IRequestHandler<UpdateProjectCommand>
     public async Task Handle(UpdateProjectCommand command, CancellationToken cancellationToken)
     {
         var request=command.Request;
-        var entity = await ProjectRepository.GetByIdAsync(command.id) ??
+        var entity = await ProjectRepository.GetByIdAsync(command.id, includeInactive: true) ??
             throw new NotFoundException("Project doesnt exist");
         var namechanged=!string.Equals(entity.Name, request.Name.Trim(), StringComparison.OrdinalIgnoreCase);
         if (namechanged && await ProjectRepository.ExistsByNameAsync(request.Name))
