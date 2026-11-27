@@ -62,10 +62,10 @@ public class TimeEntriesController : ControllerBase
         return Ok(await Mediator.Send(new GetDayTimeEntriesQuery(date), cancellationToken));
     }
 
-    [HttpGet("month")]
-    public async Task<ActionResult<MonthTimeEntriesResponse>>GetMonth([FromQuery]GetMonthTimeEntriesRequest request, CancellationToken cancellationToken)
+    [HttpGet("summary")]
+    public async Task<ActionResult<GetTimeEntriesSummaryRequest>> GetSummary([FromQuery]GetTimeEntriesSummaryRequest request, CancellationToken cancellationToken)
     {
-        return Ok(await Mediator.Send(new GetMonthTimeEntriesQuery(request), cancellationToken));
+        return Ok(await Mediator.Send(new GetTimeEntriesSummaryQuery(request), cancellationToken));
     }
 
 }

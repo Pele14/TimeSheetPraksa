@@ -8,6 +8,7 @@ using TimeSheet.Application.Project.Commands.UpdateProject;
 using TimeSheet.Application.Project.Queries.GetProjectById;
 using TimeSheet.Application.Project.Queries.GetProjects;
 using TimeSheet.Application.Requests.ProjectResponses;
+using TimeSheet.Api.Authorization;
 
 namespace TimeSheet.Api.Controllers;
 
@@ -38,6 +39,7 @@ public class ProjectController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles =Roles.Admin)]
     public async Task<ActionResult<ProjectResponse>> Create(CreateProjectRequest request, CancellationToken cancellationToken)
     {
         var result = await Mediator.Send(new CreateProjectCommand(request), cancellationToken);
@@ -45,6 +47,7 @@ public class ProjectController : ControllerBase
 
     }
     [HttpDelete("{id:guid}")]
+    [Authorize(Roles =Roles.Admin)]
     public async Task<ActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
         await Mediator.Send(new DeleteProjectCommand(id), cancellationToken);
@@ -53,6 +56,7 @@ public class ProjectController : ControllerBase
     }
 
     [HttpPut("{id:guid}")]
+    [Authorize(Roles =Roles.Admin)]
     public async Task<ActionResult> Update(Guid id, UpdateProjectRequest request, CancellationToken cancellationToken)
     {
         await Mediator.Send(new UpdateProjectCommand(id, request), cancellationToken);

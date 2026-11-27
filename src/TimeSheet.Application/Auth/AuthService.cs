@@ -36,6 +36,9 @@ public class AuthService : IAuthService
             throw new UnauthorizedException("Wrong password");
 
         }
+        else if(entity.Status!=MemberStatus.Active)
+             throw new ForbiddenException("Your account is inactive");
+        
         var token = TokenService.GenerateToken(entity.Id, entity.Role.ToString());
         return new LoginResponse
         {

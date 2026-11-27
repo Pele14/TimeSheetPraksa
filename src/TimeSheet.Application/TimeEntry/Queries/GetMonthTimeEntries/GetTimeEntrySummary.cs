@@ -6,4 +6,4 @@ namespace TimeSheet.Application.TimeEntry.Queries.GetMonthTimeEntries;
 
 
 
-public record GetMonthTimeEntriesQuery(GetMonthTimeEntriesRequest Request): IRequest<MonthTimeEntriesResponse>;
+public record GetTimeEntriesSummaryQuery(GetTimeEntriesSummaryRequest Request): IRequest<MonthTimeEntriesResponse>;

@@ -32,7 +32,7 @@ public class TokenService : ITokenService
             Subject = new ClaimsIdentity(new[]
             {
                     new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
-                    new Claim(ClaimTypes.Role, role)
+                    new Claim(ClaimTypes.Role, role.ToString())
 
                 }),
             Expires = DateTime.UtcNow.AddMinutes(jwtSettings.ExpirationMinutes),

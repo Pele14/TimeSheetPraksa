@@ -7,6 +7,7 @@ using TimeSheet.Application.Client.Commands.DeleteClient;
 using TimeSheet.Application.Client.Commands.UpdateClient;
 using TimeSheet.Application.Client.Queries.GetClientById;
 using TimeSheet.Application.Client.Queries.GetClients;
+using TimeSheet.Api.Authorization;
 
 namespace TimeSheet.Api.Controllers;
 
@@ -37,6 +38,7 @@ public class ClientController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles =Roles.Admin)]
     public async Task<ActionResult<ClientResponse>> Create(CreateClientRequest request, CancellationToken cancellationToken)
     {
         var result = await Mediator.Send(new CreateClientCommand(request), cancellationToken);
@@ -44,6 +46,7 @@ public class ClientController : ControllerBase
 
     }
     [HttpDelete("{id:guid}")]
+    [Authorize(Roles =Roles.Admin)]
     public async Task<ActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
         await Mediator.Send(new DeleteClientCommand(id), cancellationToken);
@@ -52,6 +55,7 @@ public class ClientController : ControllerBase
     }
 
     [HttpPut("{id:guid}")]
+    [Authorize(Roles =Roles.Admin)]
     public async Task<ActionResult> Update(Guid id, UpdateClientRequest request, CancellationToken cancellationToken)
     {
         await Mediator.Send(new UpdateClientCommand(id, request), cancellationToken);

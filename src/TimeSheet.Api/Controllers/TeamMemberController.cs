@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TimeSheet.Api.Authorization;
 using TimeSheet.Application.Requests.TeamMemberRequests;
 using TimeSheet.Application.Responses.TeamMemberResponses;
 using TimeSheet.Application.TeamMember.Commands.CreateTeamMember;
@@ -38,6 +39,7 @@ public class TeamMembersController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles =Roles.Admin)]
     public async Task<ActionResult<TeamMemberResponse>> Create(CreateTeamMemberRequest request, CancellationToken cancellationToken)
     {
         var result = await Mediator.Send(new CreateTeamMemberCommand(request), cancellationToken);
@@ -45,6 +47,7 @@ public class TeamMembersController : ControllerBase
 
     }
     [HttpDelete("{id:guid}")]
+    [Authorize(Roles =Roles.Admin)]
     public async Task<ActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
         await Mediator.Send(new DeleteTeamMemberCommand(id), cancellationToken);
@@ -53,6 +56,7 @@ public class TeamMembersController : ControllerBase
     }
 
     [HttpPut("{id:guid}")]
+    [Authorize(Roles =Roles.Admin)]
     public async Task<ActionResult> Update(Guid id, UpdateTeamMemberRequest request, CancellationToken cancellationToken)
     {
         await Mediator.Send(new UpdateTeamMemberCommand(id, request), cancellationToken);
